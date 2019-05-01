@@ -4,7 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 
@@ -23,23 +26,38 @@ public class ClientUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+    }
+
+    private void SayMyName(String text){
         Socket fromserver = null;
+        DefaultListModel dlm=new DefaultListModel();
         try {
-            fromserver = new Socket("25.51.53.149",2620);
+            fromserver = new Socket("25.44.20.209",2620);
+            BufferedReader in  = new BufferedReader(new InputStreamReader(fromserver.getInputStream()));
+            PrintWriter out = new PrintWriter(fromserver.getOutputStream(),true);
+
+            String fserver;
+
+                out.println(text);
+                fserver = in.readLine();
+                dlm.addElement(fserver);
+                list1.setModel(dlm);
+
+            out.close();
+            in.close();
+            fromserver.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-
     private ClientUI() {
-        DefaultListModel dlm=new DefaultListModel();
+
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlm.addElement(textField1.getText());
-                list1.setModel(dlm);
+                SayMyName(textField1.getText());
             }
         });
     }
