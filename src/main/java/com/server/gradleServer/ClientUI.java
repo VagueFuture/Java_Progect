@@ -1,22 +1,17 @@
 package com.server.gradleServer;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
 
-@Controller
 public class ClientUI {
-    private JButton button1;
+    //private JButton button1;
     private JPanel panel1;
-    private JTextField textField1;
+    //private JTextField textField1;
 
-    private String str="lol";
+    private String str="lool";
 
 
     public static void main(String[] args){
@@ -29,7 +24,7 @@ public class ClientUI {
     }
 
     private ClientUI() {
-        button1.addActionListener(new ActionListener() {
+        /*button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 str="Hai";
@@ -37,11 +32,6 @@ public class ClientUI {
                 JOptionPane.showMessageDialog(null,str);
                 textField1.setText(str);
             }
-        });
-    }
-    @RequestMapping("/2")
-    @ResponseBody
-    String hello(){
-        return str;
+        });*/
     }
 }
