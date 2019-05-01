@@ -4,12 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.IOException;
+import java.net.Socket;
 
 
 public class ClientUI {
-    private JButton button1;
+
     private JPanel panel1;
+
     private JTextField textField1;
     private JList list1;
 
@@ -21,6 +23,16 @@ public class ClientUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        Socket fromserver = null;
+        try {
+            fromserver = new Socket("localhost",2620);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    }
+
     }
 
     private ClientUI() {
@@ -34,3 +46,4 @@ public class ClientUI {
         });
     }
 }
+
