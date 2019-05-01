@@ -12,9 +12,9 @@ import java.awt.event.ActionListener;
 
 @Controller
 public class ClientUI {
-    private JButton button1;
+ //   private JButton button1;
     private JPanel panel1;
-    private JTextField textField1;
+  //  private JTextField textField1;
 
     public  String str="lol";
 
@@ -29,7 +29,7 @@ public class ClientUI {
     }
 
     public ClientUI() {
-        button1.addActionListener(new ActionListener() {
+      /*  button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 str="Hai";
@@ -38,10 +38,6 @@ public class ClientUI {
                 textField1.setText(str);
             }
         });
-    }
-    @RequestMapping("/2")
-    @ResponseBody
-    String hello(){
-        return str;
-    }
+    */}
+
 }
