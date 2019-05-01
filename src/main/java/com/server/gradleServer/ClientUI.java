@@ -32,6 +32,7 @@ public class ClientUI {
     }
 
 
+
     private ClientUI() {
         DefaultListModel dlm=new DefaultListModel();
         button1.addActionListener(new ActionListener() {
