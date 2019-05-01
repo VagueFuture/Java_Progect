@@ -10,10 +10,9 @@ public class RestController {
 
    private int two = 2;
 
-    @RequestMapping("/")
+    @RequestMapping("/1")
     @ResponseBody
    String test(){
-
         return "Hello";
     }
 
