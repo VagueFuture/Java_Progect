@@ -16,7 +16,7 @@ public class ClientUI {
     private JPanel panel1;
     private JTextField textField1;
 
-    public  String str="lol";
+    private String str="lol";
 
 
     public static void main(String[] args){
@@ -28,7 +28,7 @@ public class ClientUI {
 
     }
 
-    public ClientUI() {
+    private ClientUI() {
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -39,7 +39,7 @@ public class ClientUI {
             }
         });
     }
-    @RequestMapping("/")
+    @RequestMapping("/2")
     @ResponseBody
     String hello(){
         return str;
