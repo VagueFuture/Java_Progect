@@ -11,7 +11,7 @@ import java.net.Socket;
 public class ClientUI {
 
     private JPanel panel1;
-
+    private JButton button1;
     private JTextField textField1;
     private JList list1;
 
@@ -25,15 +25,13 @@ public class ClientUI {
         frame.setVisible(true);
         Socket fromserver = null;
         try {
-            fromserver = new Socket("localhost",2620);
+            fromserver = new Socket("25.51.53.149",2620);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    }
 
-    }
 
     private ClientUI() {
         DefaultListModel dlm=new DefaultListModel();
