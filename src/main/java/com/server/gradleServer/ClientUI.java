@@ -7,16 +7,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.IOException;
+import java.net.Socket;
 
 
 @Controller
 public class ClientUI {
- //   private JButton button1;
-    private JPanel panel1;
-  //  private JTextField textField1;
 
-    public  String str="lol";
+    private JPanel panel1;
+
+
+    private String str="lol";
 
 
     public static void main(String[] args){
@@ -26,18 +27,16 @@ public class ClientUI {
         frame.pack();
         frame.setVisible(true);
 
+        Socket fromserver = null;
+        try {
+            fromserver = new Socket("localhost",2620);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public ClientUI() {
-      /*  button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                str="Hai";
-                JOptionPane.showMessageDialog(null,"Clicked");
-                JOptionPane.showMessageDialog(null,str);
-                textField1.setText(str);
-            }
-        });
-    */}
+    }
 
-}
+
+
+
