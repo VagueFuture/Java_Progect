@@ -8,18 +8,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class RestController {
 
-    int two = 2;
+   private int two = 2;
 
     @RequestMapping("/")
     @ResponseBody
    String test(){
 
         return "Hello";
-    }
-
-    int test2(){
-
-        return two;
     }
 
 }

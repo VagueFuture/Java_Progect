@@ -39,7 +39,7 @@ public class ClientUI {
             }
         });
     }
-    @RequestMapping("/")
+    @RequestMapping("/2")
     @ResponseBody
     String hello(){
         return str;
