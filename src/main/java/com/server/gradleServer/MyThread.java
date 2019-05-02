@@ -11,6 +11,7 @@ public class MyThread implements Runnable {
     private ServerSocked server;
     private PrintWriter outMessage;
     private Scanner inMessage;
+    private String nick;
     private static final String HOST = "25.44.20.209";
     private static final int PORT = 2620;
     Socket Client = null;
@@ -34,7 +35,7 @@ public class MyThread implements Runnable {
             while (true) {
                 // сервер отправляет сообщение
              //   server.sendMessageToAllClients("Новый участник вошёл в чат!");
-             //   server.sendMessageToAllClients("Клиентов в чате = " + clients_count);
+                server.sendMessageToAllClients("@" + clients_count);
                 break;
             }
 
@@ -44,13 +45,15 @@ public class MyThread implements Runnable {
                     String clientMessage = inMessage.nextLine();
                     // если клиент отправляет данное сообщение, то цикл прерывается и
                     // клиент выходит из чата
-                    if (clientMessage.equalsIgnoreCase("##session##end##")) {
+                    if (clientMessage.equals("##session##end##")) {
                         break;
                     }
                     // выводим в консоль сообщение (для теста)
+                    this.nick = clientMessage;
                     System.out.println(clientMessage);
                     // отправляем данное сообщение всем клиентам
-                    server.sendMessageToAllClients(clientMessage);
+                  //  server.sendMessageToAllClients(clientMessage);
+                    server.sendallnickname();
                 }
                 // останавливаем выполнение потока на 100 мс
                 Thread.sleep(100);
@@ -73,11 +76,18 @@ public class MyThread implements Runnable {
         }
     }
 
+    public String getnick() {
+        if(this.nick == null)
+            return "";
+        else
+        return this.nick;
+    }
+
     public void close() {
         // удаляем клиента из списка
         server.removeClient(this);
         clients_count--;
-        server.sendMessageToAllClients(Integer.toString(clients_count));
+        server.sendMessageToAllClients("@" + clients_count);
     }
 
 }
