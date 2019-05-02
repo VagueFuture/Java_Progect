@@ -17,6 +17,7 @@ public class ClientUI {
     private JButton button1;
     private JTextField textField1;
     private JList list1;
+    private JComboBox comboBox1;
 
     public static void main(String[] args){
         JFrame frame=new JFrame("App");
