@@ -6,14 +6,21 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
+
 
 public class ServerSocked {
 
+    public static LinkedList<MyThread> serverList = new LinkedList<>();
+
+
     public static void main(String[] args) {
+
+
 
         ServerSocket servers = null;
 
-        while(true) {
+
 
 
             try {
@@ -23,11 +30,14 @@ public class ServerSocked {
                 System.exit(-1);
             }
 
+        while(true) {
 
             Socket Client = null;
+            Socket Clientall = null;
             try {
                 System.out.print("Waiting for a client...");
                 Client = servers.accept();
+                serverList.add(new MyThread(Client));
                 System.out.println("Client connected");
             } catch (IOException e) {
 
@@ -35,7 +45,7 @@ public class ServerSocked {
                 System.exit(-1);
             }
 
-            Runnable r =new MyThread(Client);
+            Runnable r = new MyThread(Client);
             Thread t = new Thread(r);
 
             t.start();
@@ -43,6 +53,8 @@ public class ServerSocked {
 
             BufferedReader in = null;
             PrintWriter out = null;
+            PrintWriter outall = null;
+
 
             try {
 
@@ -55,10 +67,16 @@ public class ServerSocked {
 
                 while ((input = in.readLine()) != null) {
                     if (input.equalsIgnoreCase("exit")) break;
-                    //
-                    //Нужно тут запомнить ник игрока
-                    //
-                    out.println(input);
+
+
+                    for (MyThread vr : ServerSocked.serverList) {
+                        Clientall = vr.getClient();
+                        outall = new PrintWriter(Clientall.getOutputStream(), true);
+                        outall.println(input);
+
+                        // отослать принятое сообщение с
+                        // привязанного клиента всем остальным включая его
+                    }
 
                     System.out.println(input);
                 }
@@ -66,12 +84,13 @@ public class ServerSocked {
                 out.close();
 
                 in.close();
-                Client.close();
-                servers.close();
+                //Client.close();
+                //servers.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
 }

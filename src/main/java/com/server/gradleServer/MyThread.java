@@ -9,4 +9,9 @@ public class MyThread implements Runnable {
     public MyThread (Socket s){
         this.Client = s;
     }
+
+    public Socket getClient() {
+        return this.Client;
+    }
+
 }
