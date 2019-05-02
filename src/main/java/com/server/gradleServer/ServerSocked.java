@@ -6,10 +6,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
+
 
 public class ServerSocked {
 
+    public static LinkedList<MyThread> serverList = new LinkedList<>();
+
+
     public static void main(String[] args) {
+
+
 
         ServerSocket servers = null;
 
@@ -28,6 +35,7 @@ public class ServerSocked {
             try {
                 System.out.print("Waiting for a client...");
                 Client = servers.accept();
+                serverList.add(new MyThread(Client));
                 System.out.println("Client connected");
             } catch (IOException e) {
 
@@ -44,6 +52,8 @@ public class ServerSocked {
             BufferedReader in = null;
             PrintWriter out = null;
 
+
+
             try {
 
                 in = new BufferedReader(new InputStreamReader(Client.getInputStream()));
@@ -55,10 +65,15 @@ public class ServerSocked {
 
                 while ((input = in.readLine()) != null) {
                     if (input.equalsIgnoreCase("exit")) break;
-                    //
-                    //Нужно тут запомнить ник игрока
-                    //
-                    out.println(input);
+
+
+                    for (MyThread vr : ServerSocked.serverList) {
+                        Client = vr.getClient();
+                        out.println(input);
+
+                        // отослать принятое сообщение с
+                        // привязанного клиента всем остальным включая его
+                    }
 
                     System.out.println(input);
                 }
@@ -74,4 +89,5 @@ public class ServerSocked {
             }
         }
     }
+
 }

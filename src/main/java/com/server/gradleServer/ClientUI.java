@@ -40,7 +40,9 @@ public class ClientUI {
             String fserver;
 
                 out.println(text);
+                out.flush();
                 fserver = in.readLine();
+            System.out.println(fserver);
                 dlm.addElement(fserver);
                 list1.setModel(dlm);
 
