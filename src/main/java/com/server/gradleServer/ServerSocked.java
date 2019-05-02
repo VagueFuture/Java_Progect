@@ -60,6 +60,14 @@ public class ServerSocked {
             }
         }
 
+    public void sendallnickname() {
+        String str = "";
+        for (MyThread o : serverList) {
+            str =str + o.getnick()+" \n";
+        }
+        sendMessageToAllClients(str);
+    }
+
     public void removeClient(MyThread client) {
         serverList.remove(client);
     }
