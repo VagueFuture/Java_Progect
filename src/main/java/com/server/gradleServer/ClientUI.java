@@ -4,9 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
@@ -20,6 +20,8 @@ public class ClientUI extends JFrame{
     private JComboBox comboBox1;
     private JLabel jlNumberOfClients;
     private JTextArea textArea1;
+    private JFrame frame;
+    private Socket fromserver;
 
     private PrintWriter out;
     private Scanner in;
@@ -31,7 +33,7 @@ public class ClientUI extends JFrame{
     }
 
     public ClientUI() {
-        Socket fromserver = null;
+        fromserver = null;
         DefaultListModel dlm = new DefaultListModel();
         try {
             fromserver = new Socket("25.44.20.209", 2620);
@@ -41,17 +43,19 @@ public class ClientUI extends JFrame{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        JFrame frame = new JFrame("App");
+        frame = new JFrame("App");
         Dimension size = new Dimension(800, 600);
         frame.setPreferredSize(size);
         frame.setContentPane(panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+
         frame.setVisible(true);
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!nickname.getText().trim().isEmpty()) {
+                    //textArea1.setText("");
                     clientName = nickname.getText();
                     sendMsg();
                 }
@@ -61,51 +65,45 @@ public class ClientUI extends JFrame{
 
         new Thread(new Runnable() {
         @Override
-        public void run() {
-            try {
-                // бесконечный цикл
-                while (true) {
-                    // если есть входящее сообщение
-                    if (in.hasNext()) {
-                        // считываем его
-                        String inMes = in.nextLine();
-                        //String clientsInChat = "Количество человек в лобби:";
-                        //if (inMes.indexOf(clientsInChat) == 0) {
-                            jlNumberOfClients.setText(inMes);
-                            //jlNumberOfClients.updateUI();
-                        //} else
+                        public void run() {
+                            try {
+                                // бесконечный цикл
+                                while (true) {
+                                    // если есть входящее сообщение
+                                    if (in.hasNext()) {
+                                        // считываем его
+                                        String inMes = in.nextLine();
+                                        if(inMes.charAt(0)=='@') {
+                                            jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
+                                        }
+                                        else {
+                                            textArea1.append(inMes);
+                                            textArea1.append("\n");
+                                        }
                     }
                 }
             } catch (Exception e) {
             }
         }
     }).start();
-    }
-    /*addWindowListener(new WindowAdapter() {
+
+     frame.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
             super.windowClosing(e);
             try {
-                // здесь проверяем, что имя клиента непустое и не равно значению по умолчанию
-                if (!clientName.isEmpty() && clientName != "Введите ваше имя: ") {
-                    outMessage.println(clientName + " вышел из чата!");
-                } else {
-                    outMessage.println("Участник вышел из чата, так и не представившись!");
-                }
                 // отправляем служебное сообщение, которое является признаком того, что клиент вышел из чата
-                outMessage.println("##session##end##");
-                outMessage.flush();
-                outMessage.close();
-                inMessage.close();
-                clientSocket.close();
+                out.println("##session##end##");
+                out.flush();
+                out.close();
+                in.close();
+                fromserver.close();
             } catch (IOException exc) {
 
             }
         }
     });
-    // отображаем форму
-    setVisible(true);
-}*/
+}
 
     public void sendMsg() {
         String messageStr = nickname.getText();
