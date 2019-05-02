@@ -18,7 +18,7 @@ public class ClientUI extends JFrame{
     private JButton button1;
     private JTextField nickname;
     private JComboBox comboBox1;
-    private JLabel numberofclient;
+    private JLabel jlNumberOfClients;
     private JTextArea textArea1;
 
     private PrintWriter out;
@@ -69,15 +69,11 @@ public class ClientUI extends JFrame{
                     if (in.hasNext()) {
                         // считываем его
                         String inMes = in.nextLine();
-                        String clientsInChat = "Количество человек в лобби:";
-                        if (inMes.indexOf(clientsInChat) == 0) {
-                            numberofclient.setText("Количество человек в лобби:"+inMes);
-                        } else {
-                            // выводим сообщение
-                            textArea1.append(inMes);
-                            // добавляем строку перехода
-                            textArea1.append("\n");
-                        }
+                        //String clientsInChat = "Количество человек в лобби:";
+                        //if (inMes.indexOf(clientsInChat) == 0) {
+                            jlNumberOfClients.setText(inMes);
+                            //jlNumberOfClients.updateUI();
+                        //} else
                     }
                 }
             } catch (Exception e) {
@@ -112,7 +108,7 @@ public class ClientUI extends JFrame{
 }*/
 
     public void sendMsg() {
-        String messageStr = nickname.getText() + ": " + textArea1.getText();
+        String messageStr = nickname.getText();
         out.println(messageStr);
         out.flush();
         textArea1.setText("");
