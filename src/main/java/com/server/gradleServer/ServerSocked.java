@@ -20,7 +20,7 @@ public class ServerSocked {
 
         ServerSocket servers = null;
 
-        while(true) {
+
 
 
             try {
@@ -30,8 +30,10 @@ public class ServerSocked {
                 System.exit(-1);
             }
 
+        while(true) {
 
             Socket Client = null;
+            Socket Clientall = null;
             try {
                 System.out.print("Waiting for a client...");
                 Client = servers.accept();
@@ -43,7 +45,7 @@ public class ServerSocked {
                 System.exit(-1);
             }
 
-            Runnable r =new MyThread(Client);
+            Runnable r = new MyThread(Client);
             Thread t = new Thread(r);
 
             t.start();
@@ -51,7 +53,7 @@ public class ServerSocked {
 
             BufferedReader in = null;
             PrintWriter out = null;
-
+            PrintWriter outall = null;
 
 
             try {
@@ -68,8 +70,9 @@ public class ServerSocked {
 
 
                     for (MyThread vr : ServerSocked.serverList) {
-                        Client = vr.getClient();
-                        out.println(input);
+                        Clientall = vr.getClient();
+                        outall = new PrintWriter(Clientall.getOutputStream(), true);
+                        outall.println(input);
 
                         // отослать принятое сообщение с
                         // привязанного клиента всем остальным включая его
@@ -81,8 +84,8 @@ public class ServerSocked {
                 out.close();
 
                 in.close();
-                Client.close();
-                servers.close();
+                //Client.close();
+                //servers.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
