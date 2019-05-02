@@ -106,10 +106,10 @@ public class ClientUI extends JFrame{
 }
 
     public void sendMsg() {
+      //textArea1.setText("");
         String messageStr = nickname.getText();
         out.println(messageStr);
         out.flush();
-        textArea1.setText("");
     }
 
 

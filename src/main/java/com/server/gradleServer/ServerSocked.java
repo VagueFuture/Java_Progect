@@ -65,6 +65,7 @@ public class ServerSocked {
         for (MyThread o : serverList) {
             str =str + o.getnick()+" \n";
         }
+        System.out.println("str = " + str);
         sendMessageToAllClients(str);
     }
 
