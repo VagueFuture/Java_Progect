@@ -33,12 +33,12 @@ public class MyThread implements Runnable {
         try {
             while (true) {
                 // сервер отправляет сообщение
-                server.sendMessageToAllClients("Новый участник вошёл в чат!");
-                server.sendMessageToAllClients("Клиентов в чате = " + clients_count);
+             //   server.sendMessageToAllClients("Новый участник вошёл в чат!");
+             //   server.sendMessageToAllClients("Клиентов в чате = " + clients_count);
                 break;
             }
 
-            while (true) {
+            while (true) {//////////////////////////////////Работа Сервера
                 // Если от клиента пришло сообщение
                 if (inMessage.hasNext()) {
                     String clientMessage = inMessage.nextLine();
@@ -54,7 +54,7 @@ public class MyThread implements Runnable {
                 }
                 // останавливаем выполнение потока на 100 мс
                 Thread.sleep(100);
-            }
+            }///////////////////////////////////////////////////////
         }
         catch (InterruptedException ex) {
             ex.printStackTrace();
@@ -77,7 +77,7 @@ public class MyThread implements Runnable {
         // удаляем клиента из списка
         server.removeClient(this);
         clients_count--;
-        server.sendMessageToAllClients("Клиентов в чате = " + clients_count);
+        server.sendMessageToAllClients(Integer.toString(clients_count));
     }
 
 }
