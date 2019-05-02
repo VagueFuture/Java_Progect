@@ -55,9 +55,9 @@ public class ClientUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!nickname.getText().trim().isEmpty()) {
-                    //textArea1.setText("");
+                    textArea1.setText("");
                     clientName = nickname.getText();
-                    sendMsg();
+                    sendMsg(clientName);
                 }
             }
         });
@@ -69,20 +69,12 @@ public class ClientUI extends JFrame{
                             try {
                                 // бесконечный цикл
                                 while (true) {
-                                    // если есть входящее сообщение
-                                    if (in.hasNext()) {
-                                        // считываем его
-                                        String inMes = in.nextLine();
-                                        if(inMes.charAt(0)=='@') {
-                                            jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
-                                        }
-                                        else {
-                                            textArea1.append(inMes);
-                                            textArea1.append("\n");
-                                        }
-                    }
+                                    getdMsg();
                 }
             } catch (Exception e) {
+                                e.printStackTrace();
+                                System.out.println(e);
+
             }
         }
     }).start();
@@ -105,11 +97,28 @@ public class ClientUI extends JFrame{
     });
 }
 
-    public void sendMsg() {
-        String messageStr = nickname.getText();
-        out.println(messageStr);
+    public void sendMsg(String msg) {
+        out.println(msg);
         out.flush();
-        textArea1.setText("");
+    }
+
+    public void getdMsg() {/////////////НЕ РАБОТАЕТ ТОЛКОМ ВЫВОД ИГРОКОВ, НАХОДЯЩИХСЯ В ЛОББИ
+        String ch="";
+        if (in.hasNext()) {
+            textArea1.setText("");
+            for (int i = 0; i < 4; i++) {
+                // считываем его
+                String inMes = in.next();
+                ch+=inMes+"\n";
+                if (inMes.indexOf('@') != -1) {
+                    jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
+                } else {
+                    textArea1.append(inMes + "\n");
+                }
+            }
+        }
+        textArea1.append(ch);
+        System.out.println(ch);
     }
 
 
