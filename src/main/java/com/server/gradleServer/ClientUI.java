@@ -55,9 +55,11 @@ public class ClientUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!nickname.getText().trim().isEmpty()) {
-                    //textArea1.setText("");
-                    clientName = nickname.getText();
-                    sendMsg();
+                    textArea1.setText("");
+                    clientName = "Client_nick=";
+                    clientName += nickname.getText();
+                    clientName += "@GoR";
+                    sendMsg(clientName);
                 }
             }
         });
@@ -69,20 +71,12 @@ public class ClientUI extends JFrame{
                             try {
                                 // бесконечный цикл
                                 while (true) {
-                                    // если есть входящее сообщение
-                                    if (in.hasNext()) {
-                                        // считываем его
-                                        String inMes = in.nextLine();
-                                        if(inMes.charAt(0)=='@') {
-                                            jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
-                                        }
-                                        else {
-                                            textArea1.append(inMes);
-                                            textArea1.append("\n");
-                                        }
-                    }
+                                    getdMsg();
                 }
             } catch (Exception e) {
+                                e.printStackTrace();
+                                System.out.println(e);
+
             }
         }
     }).start();
@@ -105,11 +99,38 @@ public class ClientUI extends JFrame{
     });
 }
 
-    public void sendMsg() {
-      //textArea1.setText("");
-        String messageStr = nickname.getText();
-        out.println(messageStr);
+    public void sendMsg(String msg) {
+        out.println(msg);
         out.flush();
+    }
+
+    public void getdMsg() {/////////////НЕ РАБОТАЕТ ТОЛКОМ ВЫВОД ИГРОКОВ, НАХОДЯЩИХСЯ В ЛОББИ
+        String ch="";
+        if (in.hasNext()) {
+
+          //  for (int i = 0; i < 4; i++) {
+                // считываем его
+                String inMes = in.next();
+            if (inMes.startsWith("Client_nick")) {
+                textArea1.setText("");
+                inMes = inMes.substring(11,inMes.length());
+                String[] subStr;
+                subStr = inMes.split("-");
+                for(int j=0;j<subStr.length;j++){
+                    textArea1.append(subStr[j] + "\n");
+                }
+
+            }
+                //ch+=inMes+"\n";
+            if (inMes.indexOf('@') != -1) {
+                jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
+            }else{
+                //textArea1.append(inMes + "\n");
+                }
+          //  }
+        }
+        textArea1.append(ch);
+        System.out.println(ch);
     }
 
 
