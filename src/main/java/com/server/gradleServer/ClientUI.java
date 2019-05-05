@@ -20,13 +20,17 @@ public class ClientUI extends JFrame{
     private JComboBox comboBox1;
     private JLabel jlNumberOfClients;
     private JTextArea textArea1;
+    private JButton button2;
     private JFrame frame;
     private Socket fromserver;
 
     private PrintWriter out;
     private Scanner in;
 
+    private Integer ChosenHero;
     private String clientName = "";
+    private String  PlayerStatusNotReady= "Client_not_ready";
+    private String PlayerStatusReady = "Client_ready";
     // получаем имя клиента
     public String getClientName() {
         return this.clientName;
@@ -43,13 +47,14 @@ public class ClientUI extends JFrame{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        frame = new JFrame("App");
+        frame = new JFrame("ClientUI");
         Dimension size = new Dimension(800, 600);
         frame.setPreferredSize(size);
         frame.setContentPane(panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-
+        comboBox1.addItem("Hugo_the_Glorius");
+        comboBox1.addItem("Krutzbeck");
         frame.setVisible(true);
         button1.addActionListener(new ActionListener() {
             @Override
@@ -58,8 +63,12 @@ public class ClientUI extends JFrame{
                     textArea1.setText("");
                     clientName = "Client_nick=";
                     clientName += nickname.getText();
-                    clientName += "@GoR";
+                    clientName += "@";
+                    clientName += comboBox1.getSelectedItem();
+                    ChosenHero=comboBox1.getSelectedIndex();
+                    button2.setEnabled(true);
                     sendMsg(clientName);
+                    sendMsg(PlayerStatusNotReady);
                 }
             }
         });
@@ -97,40 +106,43 @@ public class ClientUI extends JFrame{
             }
         }
     });
-}
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendMsg(PlayerStatusReady);
+                button2.setEnabled(false);
+            }
+        });
+    }
 
     public void sendMsg(String msg) {
         out.println(msg);
         out.flush();
     }
 
-    public void getdMsg() {/////////////НЕ РАБОТАЕТ ТОЛКОМ ВЫВОД ИГРОКОВ, НАХОДЯЩИХСЯ В ЛОББИ
-        String ch="";
+    public void getdMsg() {
         if (in.hasNext()) {
-
-          //  for (int i = 0; i < 4; i++) {
-                // считываем его
                 String inMes = in.next();
+            if(inMes.startsWith("Start_Game")){
+                Game.main(null);
+                frame.setVisible(false);
+            }
             if (inMes.startsWith("Client_nick")) {
                 textArea1.setText("");
+                //comboBox1.removeAllItems(); ОГРАНИЧЕНИЕ НА ОДИНАКОВЫХ ПЕРСОНАЖЕЙ???
+                //comboBox1.addItem(ChosenHero);
                 inMes = inMes.substring(11,inMes.length());
                 String[] subStr;
                 subStr = inMes.split("-");
                 for(int j=0;j<subStr.length;j++){
                     textArea1.append(subStr[j] + "\n");
                 }
-
             }
-                //ch+=inMes+"\n";
             if (inMes.indexOf('@') != -1) {
                 jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
             }else{
-                //textArea1.append(inMes + "\n");
                 }
-          //  }
         }
-        textArea1.append(ch);
-        System.out.println(ch);
     }
 
 
