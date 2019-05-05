@@ -70,6 +70,27 @@ public class ServerSocked {
         sendMessageToAllClients(str);
     }
 
+    public void CheckAllClientReady() {
+        int i= 0;
+        boolean ready;
+        int client = 0;
+        for (MyThread o : serverList) {
+             ready=o.getready();
+             if(ready)
+                 i++;
+             else
+                 i=0;
+
+             client = o.getAllClients();
+        }
+        if(i == client){
+            sendMessageToAllClients("Start_Game");
+            System.out.println("All_ready!!");
+        }else
+        System.out.println("Not_All_ready");
+
+    }
+
 
     public void removeClient(MyThread client) {
         serverList.remove(client);

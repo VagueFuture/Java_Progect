@@ -13,6 +13,7 @@ public class MyThread implements Runnable {
     private Scanner inMessage;
     private String nick;
     private String hero;
+    private boolean ready;
     private static final String HOST = "25.44.20.209";
     private static final int PORT = 2620;
     Socket Client = null;
@@ -62,6 +63,17 @@ public class MyThread implements Runnable {
                         System.out.println("Hero get! "+this.hero);
                     }
 
+                    if (clientMessage.startsWith("Client_ready")) {
+                        this.ready =true;
+                        server.CheckAllClientReady();
+                        System.out.println("Ready! = "+this.getready());
+                    }
+
+                    if (clientMessage.startsWith("Client_not_ready")) {
+                        this.ready =false;
+                        server.CheckAllClientReady();
+                        System.out.println("Ready! = "+this.getready());
+                    }
 
                     System.out.println(clientMessage);
                     // отправляем данное сообщение всем клиентам
@@ -100,6 +112,14 @@ public class MyThread implements Runnable {
             return "Ожидание";
         else
             return this.hero;
+    }
+
+    public boolean getready() {
+            return this.ready;
+    }
+
+    public int getAllClients() {
+        return this.clients_count;
     }
 
     public void close() {
