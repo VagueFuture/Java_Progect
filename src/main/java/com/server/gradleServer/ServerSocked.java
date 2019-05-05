@@ -66,7 +66,6 @@ public class ServerSocked {
             str +=o.getnick();
             str +=">"+ o.gethero()+"-";
         }
-        System.out.println("str = " + str);
         sendMessageToAllClients(str);
     }
 
