@@ -12,6 +12,7 @@ public class MyThread implements Runnable {
     private PrintWriter outMessage;
     private Scanner inMessage;
     private String nick;
+    private String hero;
     private static final String HOST = "25.44.20.209";
     private static final int PORT = 2620;
     Socket Client = null;
@@ -49,11 +50,22 @@ public class MyThread implements Runnable {
                         break;
                     }
                     // выводим в консоль сообщение (для теста)
-                    this.nick = clientMessage;
+                    //Получаем никнейм от клиента
+                    if (clientMessage.startsWith("Client_nick")) {
+                        clientMessage = clientMessage.substring(12,clientMessage.length());
+                        String[] subStr;
+                        subStr = clientMessage.split("@");
+                        this.nick = subStr[0];
+                        this.hero = subStr[1];
+                        server.sendAllNicknameAndHero();
+                        System.out.println("Nick get! "+this.nick);
+                        System.out.println("Hero get! "+this.hero);
+                    }
+
+
                     System.out.println(clientMessage);
                     // отправляем данное сообщение всем клиентам
-                  //  server.sendMessageToAllClients(clientMessage);
-                    server.sendallnickname();
+                    //  server.sendMessageToAllClients(clientMessage);
                 }
                 // останавливаем выполнение потока на 100 мс
                 Thread.sleep(100);
@@ -78,9 +90,16 @@ public class MyThread implements Runnable {
 
     public String getnick() {
         if(this.nick == null)
-            return "";
+            return "Не_готов";
         else
         return this.nick;
+    }
+
+    public String gethero() {
+        if(this.nick == null)
+            return "Ожидание";
+        else
+            return this.hero;
     }
 
     public void close() {

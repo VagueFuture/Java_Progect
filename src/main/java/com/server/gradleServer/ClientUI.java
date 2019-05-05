@@ -56,7 +56,9 @@ public class ClientUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 if (!nickname.getText().trim().isEmpty()) {
                     textArea1.setText("");
-                    clientName = nickname.getText();
+                    clientName = "Client_nick=";
+                    clientName += nickname.getText();
+                    clientName += "@GoR";
                     sendMsg(clientName);
                 }
             }
@@ -105,17 +107,27 @@ public class ClientUI extends JFrame{
     public void getdMsg() {/////////////НЕ РАБОТАЕТ ТОЛКОМ ВЫВОД ИГРОКОВ, НАХОДЯЩИХСЯ В ЛОББИ
         String ch="";
         if (in.hasNext()) {
-            textArea1.setText("");
-            for (int i = 0; i < 4; i++) {
+
+          //  for (int i = 0; i < 4; i++) {
                 // считываем его
                 String inMes = in.next();
-                ch+=inMes+"\n";
-                if (inMes.indexOf('@') != -1) {
-                    jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
-                } else {
-                    textArea1.append(inMes + "\n");
+            if (inMes.startsWith("Client_nick")) {
+                textArea1.setText("");
+                inMes = inMes.substring(11,inMes.length());
+                String[] subStr;
+                subStr = inMes.split("-");
+                for(int j=0;j<subStr.length;j++){
+                    textArea1.append(subStr[j] + "\n");
                 }
+
             }
+                //ch+=inMes+"\n";
+            if (inMes.indexOf('@') != -1) {
+                jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
+            }else{
+                //textArea1.append(inMes + "\n");
+                }
+          //  }
         }
         textArea1.append(ch);
         System.out.println(ch);
