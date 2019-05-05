@@ -1,14 +1,23 @@
 package com.server.gradleServer;
 
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+
+
 
 public class ServerSocked {
 
-    public static void main(String[] args) {
+    public static ArrayList<MyThread> serverList = new ArrayList<>();
+
+
+    public ServerSocked() {
 
         ServerSocket servers = null;
+
+        Socket Client = null;
 
         try {
             servers = new ServerSocket(2620);
@@ -17,18 +26,74 @@ public class ServerSocked {
             System.exit(-1);
         }
 
-
-        Socket Client;
         try {
-            System.out.print("Waiting for a client...");
-            Client = servers.accept();
-            System.out.println("Client connected");
-        } catch (IOException e) {
 
-            System.out.println("Can't accept");
-            System.exit(-1);
-        }
+        while (true) {
 
+
+
+                System.out.print("Waiting for a client...");
+                Client = servers.accept();
+                //serverList.add(new MyThread(Client));
+                MyThread client = new MyThread(Client, this);
+                serverList.add(client);
+                System.out.println("Client connected");
+                new Thread(client).start();
+            }
+            } catch (IOException e) {
+                System.out.println("Can't accept");
+                System.exit(-1);
+            } finally {
+                try {
+                    Client.close();
+                    System.out.println("Сервер остановлен");
+                    servers.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
 
     }
+        public void sendMessageToAllClients(String msg) {
+            for (MyThread o : serverList) {
+                o.sendMsg(msg);
+            }
+        }
+
+    public void sendAllNicknameAndHero() {
+        String str = "Client_nick";
+        for (MyThread o : serverList) {
+            str +=o.getnick();
+            str +=">"+ o.gethero()+"-";
+        }
+        sendMessageToAllClients(str);
+    }
+
+    public void CheckAllClientReady() {
+        int i= 0;
+        boolean ready;
+        int client = 0;
+        for (MyThread o : serverList) {
+             ready=o.getready();
+             if(ready)
+                 i++;
+             else
+                 i=0;
+
+             client = o.getAllClients();
+        }
+        if(i == client){
+            sendMessageToAllClients("Start_Game");
+            System.out.println("All_ready!!");
+        }else
+        System.out.println("Not_All_ready");
+
+    }
+
+
+    public void removeClient(MyThread client) {
+        serverList.remove(client);
+    }
+
+
 }
