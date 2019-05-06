@@ -19,19 +19,29 @@ public class TheGame extends JFrame {
     private JFrame frame;
     private Icon icon;
     private Image img;
+    private FileReader reader;
 
+    private int c;
+    private String status="";
 
     public TheGame(Integer Hero) {
         frame = new JFrame("Game");
         Dimension size = new Dimension(1920, 1080);
         frame.setPreferredSize(size);
         frame.setContentPane(jpanel1);
-        //System.out.println(Hero);
+
         try {
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Hero\\"+ Hero +".png"));
             img = img.getScaledInstance(400, 200,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             hero.setIcon(icon);
+            reader= new FileReader("src\\main\\resources\\Database\\bd.csv");
+            while((c=reader.read())!='\n') {
+                status+=Character.toString(c);
+                System.out.print((char) c);
+            }
+            TextArea.setText(status);
+            status="";
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -48,10 +58,9 @@ public class TheGame extends JFrame {
     }
 
     public void paint(){
-        int a = 4 + (int) ( Math.random() * 2 );
-        String status="";
-        try(FileReader reader = new FileReader("src\\main\\resources\\Database\\bd.csv")){
-            int c;
+        int a = 2 + (int) ( Math.random() * 4 );
+        System.out.println(a);
+        try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv");){
             while((c=reader.read())!=-1){
                 if(Character.toString(c).equals(Integer.toString(a))) {
                     while((c=reader.read())!='\n') {
@@ -61,11 +70,13 @@ public class TheGame extends JFrame {
                     break;
                 }
             }
+            //reader.close();
         }
         catch(IOException ex){
             System.out.println(ex.getMessage());
         }
         TextArea.setText(status);
+        status="";
         try {
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ a +".png"));
             img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
