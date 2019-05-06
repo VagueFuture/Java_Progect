@@ -50,6 +50,7 @@
         </constraints>
         <properties>
           <editable value="false"/>
+          <lineWrap value="false"/>
         </properties>
       </component>
       <component id="17bd2" class="javax.swing.JLabel">

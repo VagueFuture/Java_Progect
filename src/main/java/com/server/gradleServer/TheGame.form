@@ -1,24 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.server.gradleServer.TheGame">
-  <grid id="27dc6" binding="jpanel1" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="jpanel1" layout-manager="GridLayoutManager" row-count="6" column-count="32" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="1102" height="735"/>
+      <xy x="20" y="20" width="1240" height="873"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-18176"/>
+      <enabled value="true"/>
+      <foreground color="-18176"/>
+    </properties>
     <border type="none"/>
     <children>
-      <component id="877d2" class="javax.swing.JButton" binding="button1" default-binding="true">
+      <component id="32689" class="javax.swing.JLabel" binding="room">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="2" col-span="22" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="WHERE AM I?"/>
+          <enabled value="true"/>
+          <icon value="Drawable/Rooms/1.png"/>
+          <text value=""/>
         </properties>
       </component>
-      <component id="32689" class="javax.swing.JLabel" binding="jlabel1">
+      <hspacer id="fd518">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="4" row-span="3" col-span="28" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <component id="ae1c4" class="javax.swing.JTextArea" binding="TextArea">
+        <constraints>
+          <grid row="2" column="0" row-span="3" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="50"/>
+          </grid>
+        </constraints>
+        <properties>
+          <background color="-6380121"/>
+          <editable value="false"/>
+          <enabled value="true"/>
+          <font style="1"/>
+          <text value="Вы видите перед собой дверь в подземелье."/>
+        </properties>
+      </component>
+      <component id="eae5f" class="javax.swing.JButton" binding="left">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <hideActionText value="false"/>
+          <text value="Налево"/>
+        </properties>
+      </component>
+      <component id="b0073" class="javax.swing.JButton" binding="down">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Назад"/>
+        </properties>
+      </component>
+      <component id="8e027" class="javax.swing.JButton" binding="up">
+        <constraints>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Вперед"/>
+        </properties>
+      </component>
+      <component id="b4a7a" class="javax.swing.JButton" binding="right">
+        <constraints>
+          <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Направо"/>
+        </properties>
+      </component>
+      <vspacer id="1c28a">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <hspacer id="2fa46">
+        <constraints>
+          <grid row="0" column="27" row-span="2" col-span="5" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <vspacer id="7a19b">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="32" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <vspacer id="58472">
+        <constraints>
+          <grid row="1" column="22" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <component id="ead73" class="javax.swing.JLabel" binding="hero">
+        <constraints>
+          <grid row="0" column="22" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value=""/>

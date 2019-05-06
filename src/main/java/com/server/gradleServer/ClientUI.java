@@ -55,6 +55,7 @@ public class ClientUI extends JFrame{
         frame.pack();
         comboBox1.addItem("Hugo_the_Glorius");
         comboBox1.addItem("Krutzbeck");
+        textArea1.setLineWrap(true);
         frame.setVisible(true);
         button1.addActionListener(new ActionListener() {
             @Override
@@ -124,7 +125,7 @@ public class ClientUI extends JFrame{
         if (in.hasNext()) {
                 String inMes = in.next();
             if(inMes.startsWith("Start_Game")){
-                Game.main(null);
+                Game.main(null,ChosenHero);
                 frame.setVisible(false);
             }
             if (inMes.startsWith("Client_nick")) {

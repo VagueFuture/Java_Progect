@@ -5,42 +5,75 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOError;
-import java.io.IOException;
+import java.io.*;
 
 public class TheGame extends JFrame {
     private JPanel jpanel1;
-    private JButton button1;
-    private JLabel jlabel1;
+    private JLabel room;
+    private JTextArea TextArea;
+    private JButton left;
+    private JButton right;
+    private JButton down;
+    private JButton up;
+    private JLabel hero;
     private JFrame frame;
     private Icon icon;
+    private Image img;
 
 
-    public TheGame() {
+    public TheGame(Integer Hero) {
         frame = new JFrame("Game");
-        //Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension size = new Dimension(1280, 720);
+        Dimension size = new Dimension(1920, 1080);
         frame.setPreferredSize(size);
         frame.setContentPane(jpanel1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        //System.out.println(Hero);
         try {
-            Image img = ImageIO.read(new File("src\\main\\resources\\Drawable\\5tTy0R9GGJg.jpg"));
-            img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Hero\\"+ Hero +".png"));
+            img = img.getScaledInstance(400, 200,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
+            hero.setIcon(icon);
         } catch (IOException e) {
             System.out.println(e);
         }
-        button1.addActionListener(new ActionListener() {
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        TextArea.setLineWrap(true);
+        frame.setVisible(true);
+        up.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jlabel1.setIcon(icon);
-                //frame.repaint();
+                paint();
             }
         });
-        frame.setVisible(true);
+    }
+
+    public void paint(){
+        int a = 4 + (int) ( Math.random() * 2 );
+        String status="";
+        try(FileReader reader = new FileReader("src\\main\\resources\\Database\\bd.csv")){
+            int c;
+            while((c=reader.read())!=-1){
+                if(Character.toString(c).equals(Integer.toString(a))) {
+                    while((c=reader.read())!='\n') {
+                        status+=Character.toString(c);
+                        System.out.print((char) c);
+                    }
+                    break;
+                }
+            }
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+        }
+        TextArea.setText(status);
+        try {
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ a +".png"));
+            img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
+            icon = new ImageIcon(img);
+            room.setIcon(icon);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 }
 
