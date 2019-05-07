@@ -13,6 +13,9 @@ public class MyThread implements Runnable {
     private Scanner inMessage;
     private String nick;
     private String hero;
+    private int x;
+    private int y;
+    private int room;
     private boolean ready;
     private static final String HOST = "25.44.20.209";
     private static final int PORT = 2620;
@@ -48,6 +51,7 @@ public class MyThread implements Runnable {
                     // если клиент отправляет данное сообщение, то цикл прерывается и
                     // клиент выходит из чата
                     if (clientMessage.equals("##session##end##")) {
+                        System.out.println("Клиент остановлен!");
                         break;
                     }
                     // выводим в консоль сообщение (для теста)
@@ -73,6 +77,18 @@ public class MyThread implements Runnable {
                         this.ready =false;
                         server.CheckAllClientReady();
                         System.out.println("Ready! = "+this.getready());
+                    }
+
+                    if (clientMessage.startsWith("Client_posit")) {
+                        clientMessage = clientMessage.substring(12,clientMessage.length());
+                        String[] subStr;
+                        subStr = clientMessage.split("@");
+                        this.x = Integer.valueOf(subStr[0]);
+                        this.y = Integer.valueOf(subStr[1]);
+                        this.room = Integer.valueOf(subStr[2]);
+                        server.sendAllNicknameAndHero();
+                        System.out.println("get! "+this.x+this.y);
+                        System.out.println("get! "+this.room);
                     }
 
                     System.out.println(clientMessage);
@@ -120,6 +136,19 @@ public class MyThread implements Runnable {
 
     public int getAllClients() {
         return this.clients_count;
+    }
+
+    public void setAmIn(int x,int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getAmInX() {
+        return this.x;
+    }
+
+    public int getAmInY() {
+        return this.y;
     }
 
     public void close() {
