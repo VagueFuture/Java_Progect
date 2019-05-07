@@ -27,13 +27,14 @@ public class ClientUI extends JFrame{
     private PrintWriter out;
     private Scanner in;
 
+    private int[] pos=new int[2];
     private Integer ChosenHero;
     private String clientName = "";
     private String  PlayerStatusNotReady= "Client_not_ready";
     private String PlayerStatusReady = "Client_ready";
-    // получаем имя клиента
-    public String getClientName() {
-        return this.clientName;
+
+    public int[] getpos(){
+        return this.pos;
     }
 
     public ClientUI() {
@@ -43,7 +44,6 @@ public class ClientUI extends JFrame{
             fromserver = new Socket("25.44.20.209", 2620);
             in = new Scanner(fromserver.getInputStream());
             out = new PrintWriter(fromserver.getOutputStream(), true);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -74,7 +74,6 @@ public class ClientUI extends JFrame{
             }
         });
 
-
         new Thread(new Runnable() {
         @Override
                         public void run() {
@@ -95,16 +94,7 @@ public class ClientUI extends JFrame{
         @Override
         public void windowClosing(WindowEvent e) {
             super.windowClosing(e);
-            try {
-                // отправляем служебное сообщение, которое является признаком того, что клиент вышел из чата
-                out.println("##session##end##");
-                out.flush();
-                out.close();
-                in.close();
-                fromserver.close();
-            } catch (IOException exc) {
-
-            }
+                close();
         }
     });
         button2.addActionListener(new ActionListener() {
@@ -116,16 +106,28 @@ public class ClientUI extends JFrame{
         });
     }
 
+    public void close(){
+        try {
+            // отправляем служебное сообщение, которое является признаком того, что клиент вышел из чата
+            sendMsg("##session##end##");
+            out.close();
+            in.close();
+            fromserver.close();
+        } catch (IOException exc) {
+
+        }
+    }
+
     public void sendMsg(String msg) {
         out.println(msg);
-        out.flush();
+        //out.flush();
     }
 
     public void getdMsg() {
         if (in.hasNext()) {
                 String inMes = in.next();
             if(inMes.startsWith("Start_Game")){
-                Game.main(null,ChosenHero);
+                Game.main(null,ChosenHero,fromserver,this);
                 frame.setVisible(false);
             }
             if (inMes.startsWith("Client_nick")) {
@@ -141,7 +143,16 @@ public class ClientUI extends JFrame{
             }
             if (inMes.indexOf('@') != -1) {
                 jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
-            }else{
+            }
+            if(inMes.startsWith("Client_posit")){
+                inMes = inMes.substring(12,inMes.length());
+                String[] subStr;
+                subStr = inMes.split("@");
+                for(int j=0;j<subStr.length;j++) {
+                    this.pos[j] = Integer.valueOf(subStr[j]);
+                }
+            }
+            else{
                 }
         }
     }
