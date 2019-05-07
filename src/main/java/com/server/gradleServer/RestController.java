@@ -13,7 +13,7 @@ public class RestController {
     @RequestMapping("/2")
     @ResponseBody
    String test(){
-        return "Hello";
+        return "hello";
     }
 
 }
