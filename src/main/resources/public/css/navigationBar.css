@@ -1,29 +1,30 @@
-#navigationBar{
+.navigationBar{
 
 }
-.active{
-	background-color: #447684;
+div>ul>li.active{
+	background-color: #4E648E;
+
 }
-#navigationBar>ul {
+.navigationBar>ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 
-   background-color: #0D4D4D;
+   background-color: #2E4372;
 }
-#navigationBar>ul>li{
+.navigationBar>ul>li{
 	float: left;
 }
-#navigationBar>ul>li>a{
+.navigationBar>ul>li>a{
 	display: block;
 	text-align: center;
   	padding: 14px 16px;
 	text-decoration: none;
 
-	color: #669999;
+	color: #152B55;
 }
-#navigationBar>ul>li>a:hover {
-  background-color: #407F7F;
+.navigationBar>ul>li>a:hover {
+  background-color: #7788AA;
   color: white;
 }
