@@ -10,6 +10,11 @@
   	writing-mode: horizontal-tb;
   	flex-direction: column;
 }
+.box{
+
+	border-radius: 10px;
+  	box-shadow: 0 6px 4px -4px black;
+}
 .boxSmall{
 	margin: 50px;
 	padding: 10px;
@@ -19,8 +24,9 @@
 
 	width: 150px;
 	height: 100px;
-
-	background-color: #152B55;
+	
+	color: white;
+	background-color: #D38DAF;
 }
 .boxMedium{
 	margin: 10px;
@@ -35,14 +41,19 @@
 	border-radius: 20px;
 	box-shadow: 0 6px 4px -4px black;
 
-	background-color: #152B55;
+	color: white;
+	background-color: #7A4A8D;
 }
 .boxBig{
-
-	width: 100%;
+margin: 10px;
+	
 	height: 100px;
 
-	background-color: #152B55;
+	color: white;
+	background-color: #2E4372;
+}
+.boxList{
+	padding: 10px;
 }
 img{
 	width: 100px;

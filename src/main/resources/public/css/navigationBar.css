@@ -2,7 +2,11 @@
 
 }
 div>ul>li.active{
-	background-color: #4E648E;
+	background-color: #B05883;
+
+}
+div>ul>li.active>a{
+  color: #6A123D;
 
 }
 .navigationBar>ul {
@@ -12,17 +16,18 @@ div>ul>li.active{
   overflow: hidden;
 
    background-color: #2E4372;
+   color: #152B55;
 }
 .navigationBar>ul>li{
 	float: left;
 }
-.navigationBar>ul>li>a{
+a{
 	display: block;
 	text-align: center;
   	padding: 14px 16px;
 	text-decoration: none;
 
-	color: #152B55;
+	
 }
 .navigationBar>ul>li>a:hover {
   background-color: #7788AA;
