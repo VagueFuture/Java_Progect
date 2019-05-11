@@ -1,29 +1,35 @@
-#navigationBar{
+.navigationBar{
 
 }
-.active{
-	background-color: #447684;
+div>ul>li.active{
+	background-color: #B05883;
+
 }
-#navigationBar>ul {
+div>ul>li.active>a{
+  color: #6A123D;
+
+}
+.navigationBar>ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 
-   background-color: #0D4D4D;
+   background-color: #2E4372;
+   color: #152B55;
 }
-#navigationBar>ul>li{
+.navigationBar>ul>li{
 	float: left;
 }
-#navigationBar>ul>li>a{
+a{
 	display: block;
 	text-align: center;
   	padding: 14px 16px;
 	text-decoration: none;
 
-	color: #669999;
+	
 }
-#navigationBar>ul>li>a:hover {
-  background-color: #407F7F;
+.navigationBar>ul>li>a:hover {
+  background-color: #7788AA;
   color: white;
 }
