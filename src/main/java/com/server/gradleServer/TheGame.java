@@ -110,7 +110,7 @@ public class TheGame extends JFrame {
         jpanel1.add(up,f);
 
         try {
-            img = ImageIO.read(new File("D:\\Documents\\javaproject\\src\\main\\resources\\Drawable\\Rooms\\1.png"));
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\1.png"));
             img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             room.setIcon(icon);
