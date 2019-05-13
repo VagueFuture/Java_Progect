@@ -17,7 +17,7 @@ public class MyThread implements Runnable {
     private int y;
     private int room;
     private boolean ready;
-    private static final String HOST = "25.44.20.209";
+    private static final String HOST = "localhost";//25.44.20.209
     private static final int PORT = 2620;
     Socket Client = null;
     private static int clients_count = 0;
