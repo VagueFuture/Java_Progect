@@ -7,12 +7,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Component;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class TheGame extends JFrame {
+    private JLabel[][] minimap =new JLabel[11][11];
+
     private JPanel jpanel1;
+    private JPanel jpanel_minimap = new JPanel();
     private JLabel room=new JLabel();
     private JTextArea HeroView=new JTextArea();
     private JButton left=new JButton("На Запад");
@@ -21,7 +25,6 @@ public class TheGame extends JFrame {
     private JButton up=new JButton("На Юг");
     private JLabel hero=new JLabel();
     private JLabel enemy=new JLabel();
-    private JTextArea textmap=new JTextArea();
     private JFrame frame;
     private Icon icon;
     private Image img;
@@ -35,24 +38,28 @@ public class TheGame extends JFrame {
     private int c;
     private String status="";
     private int[] currentpos;
+    private int[][] currentallpos;
     private String msg;
 
-    private final int mapsize=10;
+    private final int mapsize=11;
+    private final int roomcount=11;
+
     private int[][] map=new int[mapsize][mapsize];
 
     public TheGame(Integer Hero, Socket fromserver,ClientUI tcl) {
         frame = new JFrame("Game");
         Dimension size = new Dimension(1200, 700);
         jpanel1.setLayout(new GridBagLayout());
+        jpanel_minimap.setLayout(new GridBagLayout());
         GridBagConstraints f = new GridBagConstraints();
+        GridBagConstraints ff = new GridBagConstraints();
         frame.setPreferredSize(size);
         frame.setContentPane(jpanel1);
 
         cl=tcl;
 
         currentpos=cl.getpos();
-
-        /////////////////////Герой
+        /////////////////////Противник
         f.fill = GridBagConstraints.LAST_LINE_START;
         f.gridx=0;
         f.gridy=1;
@@ -62,15 +69,13 @@ public class TheGame extends JFrame {
         //  f.insets=new Insets(0,0,500,0);
         jpanel1.add(enemy,f);
         f.gridwidth = 1;
-/////////////////////Герой
+/////////////////////Противник
 
 /////////////////////////////Комната
         f.anchor=GridBagConstraints.FIRST_LINE_START;
      //   f.fill = GridBagConstraints.BOTH;
         f.gridx = 0;
         f.gridy = 0;
-       // f.weightx =1;
-      //  f.weighty =1;
         f.gridheight=2;
         jpanel1.add(room, f);
         f.gridheight=1;
@@ -80,50 +85,44 @@ public class TheGame extends JFrame {
         f.gridx = 0;
         f.gridy = 2;
         f.fill = GridBagConstraints.BOTH;
-        //f.weighty =0.25;
-        //f.gridheight=1;
-        //f.anchor=GridBagConstraints.LAST_LINE_START;
         HeroView.setEditable(false);
         HeroView.setLineWrap(true);
-        //f.gridwidth = 0;// setSize(5,2);// setMaximumSize(new Dimension(100,50));
         jpanel1.add(HeroView, f);
 /////////////////////Текстовое поле
+///////////////////////////Кароточки на карте
 
-/////////////////////Карта
         f.gridwidth = 2;
         //f.fill = GridBagConstraints.VERTICAL;
         f.gridx=1;
         f.gridy=0;
-       // f.weightx =1;
-       // f.weighty =0.5;
-      //  f.gridwidth=4;
-        textmap.setEditable(false);
-        textmap.setLineWrap(true);
-        //textmap.setSize(5,2);
-       // f.anchor=GridBagConstraints.PAGE_START;
-        jpanel1.add(textmap,f);
-/////////////////////Карта
+        f.gridwidth = 3;
+        jpanel1.add(jpanel_minimap,f);
+        ff.fill = GridBagConstraints.FIRST_LINE_START;
+        for(int i=0; i<minimap.length;i++)
+            for(int j=0;j<minimap.length;j++){
+                ff.gridx = i;
+                ff.gridy = j;
+                minimap[i][j] = new JLabel();
+                jpanel_minimap.add(minimap[i][j],ff);
+            }
+
+//////////////////////////Карточки на карте
+
 
 /////////////////Герой
         f.fill = GridBagConstraints.FIRST_LINE_START;
         f.gridx=1;
         f.gridy=1;
         f.gridwidth = 4;
-        //f.anchor=GridBagConstraints.NORTH;
-        //  f.insets=new Insets(0,0,500,0);
         jpanel1.add(hero,f);
         f.gridwidth = 1;
 /////////////////////Герой
 
 /////////////////////Кнопки
-        f.fill = GridBagConstraints.FIRST_LINE_START;
+        f.fill = GridBagConstraints.BOTH;
         f.gridwidth = 1;
         f.gridx=1;
         f.gridy=2;
-      //  f.gridwidth=1;
-      //  f.weightx =0.2;
-       // f.insets=new Insets(0,0,0,0);
-       // f.anchor=GridBagConstraints.SOUTHWEST;
         jpanel1.add(down,f);
 
         f.gridx=2;
@@ -146,9 +145,22 @@ public class TheGame extends JFrame {
             icon = new ImageIcon(img);
             room.setIcon(icon);
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Hero\\"+ Hero +".png"));
-            img = img.getScaledInstance(400, 200,  java.awt.Image.SCALE_SMOOTH);
+            img = img.getScaledInstance(390, 250,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             hero.setIcon(icon);
+
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\fon.png"));
+            img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
+            icon = new ImageIcon(img);
+            for(int i=0; i<minimap.length;i++)
+                for(int j=0;j<minimap.length;j++) {
+                    minimap[i][j].setIcon(icon);
+                }
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\12.png"));
+            img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
+            icon = new ImageIcon(img);
+            minimap[5][5].setIcon(icon);
+            map[5][5]=12;
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
             msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+'2';
@@ -156,7 +168,7 @@ public class TheGame extends JFrame {
             //}
             System.out.println(msg);
             cl.sendMsg(msg);
-            paintMap();
+            //paintMap();
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
             while ((c = reader.read()) != '\n') {
                 if (c != '1')
@@ -229,24 +241,29 @@ public class TheGame extends JFrame {
         });
 
     }
-    public void paintMap(){
-        textmap.setText("");
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map.length; j++) {
-                textmap.append(map[i][j] + " ");
-            }
-            textmap.append("\n");
-        }
+    public void paintMap(Integer i,Integer j,Integer k){
+                if(map[i][j]!=roomcount+1) {
+                    try {
+                        img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\"+k+".png"));
+                        img = img.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
+                        icon = new ImageIcon(img);
+                        minimap[j][i].setIcon(icon);
+                    }
+                    catch (IOException e){
+                        System.out.println(e);
+                    }
+
+                }
     }
 
 
     public void paint(){
-        int a= 2 + (int) ( Math.random() * 10 );
+        int a= 2 + (int) ( Math.random() * roomcount-1);
+        currentallpos=cl.getallpospos();
         String temp="";
-        if (map[currentpos[0]][currentpos[1]]==0) {
+        if (map[currentpos[0]][currentpos[1]]==0 && map[currentpos[0]][currentpos[1]]!=roomcount+1) {
         //System.out.println(currentpos[0]+" "+currentpos[1]);
             map[currentpos[0]][currentpos[1]] = a;
-            paintMap();
         }
         else{
             a=map[currentpos[0]][currentpos[1]];
@@ -255,6 +272,8 @@ public class TheGame extends JFrame {
         msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+a;
             //msg+='@';
         //}
+        for (int i=0;i<currentallpos.length;i++)
+        paintMap(currentallpos[1][i],currentallpos[0][i],currentallpos[2][i]);
         System.out.println(msg);
         try {
             cl.sendMsg(msg);
