@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -38,72 +39,73 @@ public class ClientUI extends JFrame{
     }
 
     public ClientUI() {
-        fromserver = null;
-        DefaultListModel dlm = new DefaultListModel();
-        try {
-            fromserver = new Socket("localhost", 2620);//25.44.20.209
-            in = new Scanner(fromserver.getInputStream());
-            out = new PrintWriter(fromserver.getOutputStream(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        frame = new JFrame("ClientUI");
-        Dimension size = new Dimension(800, 600);
-        frame.setPreferredSize(size);
-        frame.setContentPane(panel1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        comboBox1.addItem("Hugo_the_Glorius");
-        comboBox1.addItem("Krutzbeck");
-        textArea1.setLineWrap(true);
-        frame.setVisible(true);
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!nickname.getText().trim().isEmpty()) {
-                    textArea1.setText("");
-                    clientName = "Client_nick=";
-                    clientName += nickname.getText();
-                    clientName += "@";
-                    clientName += comboBox1.getSelectedItem();
-                    ChosenHero=comboBox1.getSelectedIndex();
-                    button2.setEnabled(true);
-                    sendMsg(clientName);
-                    sendMsg(PlayerStatusNotReady);
+            fromserver = null;
+            DefaultListModel dlm = new DefaultListModel();
+            try {
+                fromserver = new Socket("localhost", 2620);//25.44.20.209
+                in = new Scanner(fromserver.getInputStream());
+                out = new PrintWriter(fromserver.getOutputStream(), true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            frame = new JFrame("ClientUI");
+            Dimension size = new Dimension(800, 600);
+            frame.setPreferredSize(size);
+            frame.setContentPane(panel1);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            comboBox1.addItem("Hugo_the_Glorius");
+            comboBox1.addItem("Krutzbeck");
+            textArea1.setLineWrap(true);
+            frame.setVisible(true);
+
+            button1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (!nickname.getText().trim().isEmpty()) {
+                        textArea1.setText("");
+                        clientName = "Client_nick=";
+                        clientName += nickname.getText();
+                        clientName += "@";
+                        clientName += comboBox1.getSelectedItem();
+                        ChosenHero = comboBox1.getSelectedIndex();
+                        button2.setEnabled(true);
+                        sendMsg(clientName);
+                        sendMsg(PlayerStatusNotReady);
+                    }
                 }
-            }
-        });
+            });
 
-        new Thread(new Runnable() {
-        @Override
-                        public void run() {
-                            try {
-                                // бесконечный цикл
-                                while (true) {
-                                    getdMsg();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // бесконечный цикл
+                        while (true) {
+                            getdMsg();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println(e);
+
+                    }
                 }
-            } catch (Exception e) {
-                                e.printStackTrace();
-                                System.out.println(e);
+            }).start();
 
-            }
-        }
-    }).start();
-
-     frame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent e) {
-            super.windowClosing(e);
-                close();
-        }
-    });
-        button2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendMsg(PlayerStatusReady);
-                button2.setEnabled(false);
-            }
-        });
+            frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    super.windowClosing(e);
+                    close();
+                }
+            });
+            button2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    sendMsg(PlayerStatusReady);
+                    button2.setEnabled(false);
+                }
+            });
     }
 
     public void close(){
@@ -119,8 +121,11 @@ public class ClientUI extends JFrame{
     }
 
     public void sendMsg(String msg) {
+        try{
         out.println(msg);
-        //out.flush();
+    } catch (IOError exc) {
+        System.out.println(exc);
+    }
     }
 
     public void getdMsg() {
@@ -155,11 +160,6 @@ public class ClientUI extends JFrame{
             else{
                 }
         }
-    }
-
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
     }
 }
 
