@@ -60,6 +60,16 @@ public class ServerSocked {
             }
         }
 
+    public void sendAllClientsPosition(String msg) {
+        String str = "Clients_post";
+        for (MyThread o : serverList) {
+            str +=o.getAmInX()+"@";
+            str +=o.getAmInY()+"@";
+            str +=o.getAmInRoom();
+        }
+        sendMessageToAllClients(str);
+    }
+
     public void sendAllNicknameAndHero() {
         String str = "Client_nick";
         for (MyThread o : serverList) {

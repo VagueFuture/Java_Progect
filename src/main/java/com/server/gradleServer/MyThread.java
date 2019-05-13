@@ -151,6 +151,10 @@ public class MyThread implements Runnable {
         return this.y;
     }
 
+    public int getAmInRoom() {
+        return this.room;
+    }
+
     public void close() {
         // удаляем клиента из списка
         server.removeClient(this);

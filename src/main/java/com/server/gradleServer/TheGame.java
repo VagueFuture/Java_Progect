@@ -44,7 +44,7 @@ public class TheGame extends JFrame {
     private final int mapsize=11;
     private int[][] map=new int[mapsize][mapsize];
 
-    public TheGame(Integer Hero, Socket fromserver,ClientUI cl) {
+    public TheGame(Integer Hero, Socket fromserver,ClientUI tcl) {
         frame = new JFrame("Game");
         Dimension size = new Dimension(1200, 700);
         jpanel1.setLayout(new GridBagLayout());
@@ -53,6 +53,9 @@ public class TheGame extends JFrame {
         GridBagConstraints ff = new GridBagConstraints();
         frame.setPreferredSize(size);
         frame.setContentPane(jpanel1);
+
+        cl=tcl;
+
         currentpos=cl.getpos();
 
         /////////////////////Противник
@@ -250,6 +253,7 @@ public class TheGame extends JFrame {
 
     public void paint(){
         int a= 2 + (int) ( Math.random() * 10 );
+        String temp="";
         if (map[currentpos[0]][currentpos[1]]==0) {
         //System.out.println(currentpos[0]+" "+currentpos[1]);
             map[currentpos[0]][currentpos[1]] = a;
@@ -263,10 +267,19 @@ public class TheGame extends JFrame {
             //msg+='@';
         //}
         System.out.println(msg);
-        //cl.sendMsg(msg);
+        try {
+            cl.sendMsg(msg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv")){
             while((c=reader.read())!=-1){
-                if(Character.toString(c).equals(Integer.toString(a))) {
+                  temp+=Character.toString(c);
+                if(c=='\n'){
+                    temp="";
+                }
+                //System.out.println(temp);
+                if(temp.equals(Integer.toString(a))) {
                     while((c=reader.read())!='\n') {
                         status+=Character.toString(c);
                         System.out.print((char) c);
