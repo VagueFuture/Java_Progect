@@ -31,7 +31,7 @@ public class ClientUI extends JFrame{
 
 
     private int[] pos=new int[2];
-    private int[][] allpos;
+    private int[][] allpos=new int[3][1];
     private Integer ChosenHero;
     private String clientName = "";
     private String  PlayerStatusNotReady= "Client_not_ready";
@@ -48,7 +48,7 @@ public class ClientUI extends JFrame{
             fromserver = null;
             DefaultListModel dlm = new DefaultListModel();
             try {
-                fromserver = new Socket("localhost", 2620);//25.44.20.209
+                fromserver = new Socket("25.44.20.209", 2620);//25.44.20.209
                 in = new Scanner(fromserver.getInputStream());
                 out = new PrintWriter(fromserver.getOutputStream(), true);
             } catch (IOException e) {
@@ -169,14 +169,11 @@ public class ClientUI extends JFrame{
                 inMes = inMes.substring(12,inMes.length());
                 String[] subStr;
                 subStr = inMes.split("@");
-                int k=0;
-                for(int j=0;j<subStr.length;j++) {
-                    for(int i=0;i<3;i++) {
-                            this.allpos=new int[3][0];
-                            this.allpos[i][k] =Integer.valueOf(subStr[j]);
-                    }
-                    if(k<PlayerCount)
-                    k++;
+                //int k=0;
+                for(int j=0;j<3;j++) {
+                            this.allpos[j][0] =Integer.valueOf(subStr[j]);
+                            System.out.println(allpos[j][0]);
+                    //k++;
                 }
             }
             else{

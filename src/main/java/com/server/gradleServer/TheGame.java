@@ -58,6 +58,7 @@ public class TheGame extends JFrame {
 
         cl=tcl;
 
+        currentallpos = cl.getallpospos();
         currentpos=cl.getpos();
         /////////////////////Противник
         f.fill = GridBagConstraints.LAST_LINE_START;
@@ -163,17 +164,16 @@ public class TheGame extends JFrame {
             map[5][5]=12;
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
-            msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+'2';
             //msg+='@';
             //}
-            System.out.println(msg);
-            cl.sendMsg(msg);
+            //System.out.println(msg);
+            //cl.sendMsg(msg);
             //paintMap();
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
             while ((c = reader.read()) != '\n') {
                 if (c != '1')
                     status += Character.toString(c);
-                System.out.print((char) c);
+                //System.out.print((char) c);
             }
             HeroView.setText(status);
             status = "";
@@ -186,8 +186,8 @@ public class TheGame extends JFrame {
         up.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentpos[0]-1>=0){
-                    currentpos[0]-=1;
+                if (currentallpos[0][0]-1>=0){
+                    currentallpos[0][0]-=1;
                     paint();
                 }
                 else{
@@ -198,9 +198,8 @@ public class TheGame extends JFrame {
         down.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(currentpos[0]+1);
-                if (currentpos[0]+1<map.length){
-                currentpos[0]+=1;
+                if (currentallpos[0][0]+1<map.length){
+                    currentallpos[0][0]+=1;
                 paint();
             }
                 else{
@@ -211,8 +210,8 @@ public class TheGame extends JFrame {
         left.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentpos[1]-1>=0) {
-                    currentpos[1]-=1;
+                if(currentallpos[1][0]-1>=0) {
+                    currentallpos[1][0]-=1;
                     paint();
                 }
                 else{
@@ -223,8 +222,8 @@ public class TheGame extends JFrame {
         right.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentpos[1]+1<map.length) {
-                    currentpos[1] += 1;
+                if(currentallpos[1][0]+1<map.length) {
+                    currentallpos[1][0] += 1;
                     paint();
                 }
                 else{
@@ -257,29 +256,12 @@ public class TheGame extends JFrame {
     }
 
 
-    public void paint(){
-        int a= 2 + (int) ( Math.random() * roomcount-1);
-        currentallpos=cl.getallpospos();
+    public void paint(){//////////ФИКСАНУТЬ ЧЕРЕП В 1 0
         String temp="";
-        if (map[currentpos[0]][currentpos[1]]==0 && map[currentpos[0]][currentpos[1]]!=roomcount+1) {
-        //System.out.println(currentpos[0]+" "+currentpos[1]);
-            map[currentpos[0]][currentpos[1]] = a;
-        }
-        else{
-            a=map[currentpos[0]][currentpos[1]];
-        }
-        //for (int j = 0; j < 2; j++) {
-        msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+a;
-            //msg+='@';
-        //}
-        for (int i=0;i<currentallpos.length;i++)
-        paintMap(currentallpos[1][i],currentallpos[0][i],currentallpos[2][i]);
-        System.out.println(msg);
-        try {
-            cl.sendMsg(msg);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        cl.getallpospos();
+        System.out.println("Poluchil "+currentallpos[0][0]+" "+currentallpos[1][0]+" "+currentallpos[2][0]);
+        msg="Client_posit"+currentallpos[0][0]+"@"+currentallpos[1][0]+"@"+currentallpos[2][0];
+        paintMap(currentallpos[0][0],currentallpos[1][0],currentallpos[2][0]);
         try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv")){
             while((c=reader.read())!=-1){
                   temp+=Character.toString(c);
@@ -287,7 +269,7 @@ public class TheGame extends JFrame {
                     temp="";
                 }
                 //System.out.println(temp);
-                if(temp.equals(Integer.toString(a))) {
+                if(temp.equals(Integer.toString(currentallpos[2][0]))) {
                     while((c=reader.read())!='\n') {
                         status+=Character.toString(c);
                         System.out.print((char) c);
@@ -303,12 +285,18 @@ public class TheGame extends JFrame {
         HeroView.setText(status);
         status="";
         try {
-            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ a +".png"));
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ currentallpos[2][0] +".png"));
             img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             room.setIcon(icon);
         } catch (IOException e) {
             System.out.println(e);
+        }
+        System.out.println("Отправил="+msg);
+        try {
+            cl.sendMsg(msg);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }
