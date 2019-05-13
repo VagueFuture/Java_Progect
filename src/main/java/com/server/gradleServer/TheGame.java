@@ -210,11 +210,14 @@ public class TheGame extends JFrame {
 
 
     public void paint(){////НЕ ОТСЫЛАЕТСЯ КОРРЕКТНО ПОЗИЦИЯ ВЫБИВАЕТ ОШИБКУ НА СЕНДМЕСАГЕ
-        int a = 2 + (int) ( Math.random() * 10 );
+        int a= 2 + (int) ( Math.random() * 10 );
         if (map[currentpos[0]][currentpos[1]]==0) {
         //System.out.println(currentpos[0]+" "+currentpos[1]);
             map[currentpos[0]][currentpos[1]] = a;
             paintMap();
+        }
+        else{
+            a=map[currentpos[0]][currentpos[1]];
         }
         //for (int j = 0; j < 2; j++) {
         msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+a;
@@ -222,7 +225,7 @@ public class TheGame extends JFrame {
         //}
         System.out.println(msg);
         //cl.sendMsg(msg);
-        try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv");){
+        try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv")){
             while((c=reader.read())!=-1){
                 if(Character.toString(c).equals(Integer.toString(a))) {
                     while((c=reader.read())!='\n') {
