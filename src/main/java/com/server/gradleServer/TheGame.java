@@ -21,6 +21,7 @@ public class TheGame extends JFrame {
     private JButton down=new JButton("На Север");
     private JButton up=new JButton("На Юг");
     private JLabel hero=new JLabel();
+    private JLabel enemy=new JLabel();
     private JTextArea textmap=new JTextArea();
     private JFrame frame;
     private Icon icon;
@@ -48,53 +49,79 @@ public class TheGame extends JFrame {
         frame.setPreferredSize(size);
         frame.setContentPane(jpanel1);
         currentpos=cl.getpos();
-        f.fill = GridBagConstraints.BOTH;
+
+        /////////////////////Герой
+        f.fill = GridBagConstraints.LAST_LINE_START;////////ФИКСАНУТЬ
+        f.gridx=0;
+        f.gridy=1;
+        f.gridwidth = 4;
+
+        //f.anchor=GridBagConstraints.NORTH;
+        //  f.insets=new Insets(0,0,500,0);
+        jpanel1.add(enemy,f);
+        f.gridwidth = 1;
+/////////////////////Герой
+
+/////////////////////////////Комната
+        f.anchor=GridBagConstraints.FIRST_LINE_START;
+     //   f.fill = GridBagConstraints.BOTH;
         f.gridx = 0;
         f.gridy = 0;
-        f.weightx =1;
-        f.weighty =1;
+       // f.weightx =1;
+      //  f.weighty =1;
         f.gridheight=2;
-        f.anchor=GridBagConstraints.FIRST_LINE_START;
         jpanel1.add(room, f);
+        f.gridheight=1;
+////////////////////////////Комната
 
-
+/////////////////////Текстовое поле
         f.gridx = 0;
         f.gridy = 2;
-        f.weighty =0.25;
-        f.gridheight=1;
-        f.anchor=GridBagConstraints.LAST_LINE_START;
+        f.fill = GridBagConstraints.BOTH;
+        //f.weighty =0.25;
+        //f.gridheight=1;
+        //f.anchor=GridBagConstraints.LAST_LINE_START;
         HeroView.setEditable(false);
         HeroView.setLineWrap(true);
-        //HeroView.setSize(5,2);// setMaximumSize(new Dimension(100,50));
+        //f.gridwidth = 0;// setSize(5,2);// setMaximumSize(new Dimension(100,50));
         jpanel1.add(HeroView, f);
+/////////////////////Текстовое поле
 
-        f.fill = GridBagConstraints.HORIZONTAL;
+/////////////////////Карта
+        f.gridwidth = 2;
+        //f.fill = GridBagConstraints.VERTICAL;
         f.gridx=1;
         f.gridy=0;
-        f.weightx =1;
-        f.weighty =0.5;
-        f.gridwidth=4;
+       // f.weightx =1;
+       // f.weighty =0.5;
+      //  f.gridwidth=4;
         textmap.setEditable(false);
         textmap.setLineWrap(true);
         //textmap.setSize(5,2);
-        f.anchor=GridBagConstraints.PAGE_START;
+       // f.anchor=GridBagConstraints.PAGE_START;
         jpanel1.add(textmap,f);
+/////////////////////Карта
 
-        f.fill = GridBagConstraints.HORIZONTAL;////////ФИКСАНУТЬ
+/////////////////Герой
+        f.fill = GridBagConstraints.FIRST_LINE_START;///////ФИКСАНУТЬ
         f.gridx=1;
         f.gridy=1;
-        f.weightx =1;
-        f.weighty =0.1;
-        f.anchor=GridBagConstraints.NORTH;
-        f.insets=new Insets(0,0,500,0);
+        f.gridwidth = 4;
+        //f.anchor=GridBagConstraints.NORTH;
+        //  f.insets=new Insets(0,0,500,0);
         jpanel1.add(hero,f);
+        f.gridwidth = 1;
+/////////////////////Герой
 
+/////////////////////Кнопки
+        f.fill = GridBagConstraints.FIRST_LINE_START;
+        f.gridwidth = 1;
         f.gridx=1;
         f.gridy=2;
-        f.gridwidth=1;
-        f.weightx =0.2;
-        f.insets=new Insets(0,0,0,0);
-        f.anchor=GridBagConstraints.SOUTHWEST;
+      //  f.gridwidth=1;
+      //  f.weightx =0.2;
+       // f.insets=new Insets(0,0,0,0);
+       // f.anchor=GridBagConstraints.SOUTHWEST;
         jpanel1.add(down,f);
 
         f.gridx=2;
@@ -109,8 +136,10 @@ public class TheGame extends JFrame {
         f.gridy=2;
         jpanel1.add(up,f);
 
+/////////////////////Кнопки
+
         try {
-            img = ImageIO.read(new File("D:\\Documents\\javaproject\\src\\main\\resources\\Drawable\\Rooms\\1.png"));
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\1.png"));
             img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             room.setIcon(icon);
@@ -118,7 +147,7 @@ public class TheGame extends JFrame {
             img = img.getScaledInstance(400, 200,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             hero.setIcon(icon);
-            jpanel1.add(hero, f);
+            //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
             msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+'2';
             //msg+='@';
