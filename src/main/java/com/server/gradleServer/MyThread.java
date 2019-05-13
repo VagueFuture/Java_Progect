@@ -17,7 +17,7 @@ public class MyThread implements Runnable {
     private int y;
     private int room;
     private boolean ready;
-    private static final String HOST = "25.44.20.209";
+    private static final String HOST = "25.44.20.209";//25.44.20.209
     private static final int PORT = 2620;
     Socket Client = null;
     private static int clients_count = 0;
@@ -39,7 +39,6 @@ public class MyThread implements Runnable {
         try {
             while (true) {
                 // сервер отправляет сообщение
-             //   server.sendMessageToAllClients("Новый участник вошёл в чат!");
                 server.sendMessageToAllClients("@" + clients_count);
                 break;
             }
@@ -49,12 +48,11 @@ public class MyThread implements Runnable {
                 if (inMessage.hasNext()) {
                     String clientMessage = inMessage.nextLine();
                     // если клиент отправляет данное сообщение, то цикл прерывается и
-                    // клиент выходит из чата
+                    // клиент выходит
                     if (clientMessage.equals("##session##end##")) {
                         System.out.println("Клиент остановлен!");
                         break;
                     }
-                    // выводим в консоль сообщение (для теста)
                     //Получаем никнейм от клиента
                     if (clientMessage.startsWith("Client_nick")) {
                         clientMessage = clientMessage.substring(12,clientMessage.length());
@@ -83,17 +81,17 @@ public class MyThread implements Runnable {
                         clientMessage = clientMessage.substring(12,clientMessage.length());
                         String[] subStr;
                         subStr = clientMessage.split("@");
+                        int a= 2 + (int) ( Math.random() * 11-1);
                         this.x = Integer.valueOf(subStr[0]);
                         this.y = Integer.valueOf(subStr[1]);
-                        this.room = Integer.valueOf(subStr[2]);
-                        server.sendAllNicknameAndHero();
-                        System.out.println("get! "+this.x+this.y);
-                        System.out.println("get! "+this.room);
+                        this.room = a;
+                        server.sendAllClientsPosition();
+                        System.out.println("get! x y = "+this.x+" "+this.y);
+                        System.out.println("get! room = "+this.room);
                     }
 
-                    System.out.println(clientMessage);
-                    // отправляем данное сообщение всем клиентам
-                    //  server.sendMessageToAllClients(clientMessage);
+                    System.out.println("Client message = "+clientMessage);
+
                 }
                 // останавливаем выполнение потока на 100 мс
                 Thread.sleep(100);

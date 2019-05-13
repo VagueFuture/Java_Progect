@@ -39,9 +39,12 @@ public class TheGame extends JFrame {
     private int c;
     private String status="";
     private int[] currentpos;
+    private int[][] currentallpos;
     private String msg;
 
     private final int mapsize=11;
+    private final int roomcount=11;
+
     private int[][] map=new int[mapsize][mapsize];
 
     public TheGame(Integer Hero, Socket fromserver,ClientUI tcl) {
@@ -57,7 +60,6 @@ public class TheGame extends JFrame {
         cl=tcl;
 
         currentpos=cl.getpos();
-
         /////////////////////Противник
         f.fill = GridBagConstraints.LAST_LINE_START;
         f.gridx=0;
@@ -95,7 +97,6 @@ public class TheGame extends JFrame {
         f.gridx=1;
         f.gridy=0;
         f.gridwidth = 3;
-        textmap.setEditable(false);
         jpanel1.add(jpanel_minimap,f);
         ff.fill = GridBagConstraints.FIRST_LINE_START;
         for(int i=0; i<minimap.length;i++)
@@ -156,10 +157,11 @@ public class TheGame extends JFrame {
                 for(int j=0;j<minimap.length;j++) {
                     minimap[i][j].setIcon(icon);
                 }
-            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\11.png"));
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\12.png"));
             img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             minimap[5][5].setIcon(icon);
+            map[5][5]=12;
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
             msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+'2';
@@ -167,7 +169,7 @@ public class TheGame extends JFrame {
             //}
             System.out.println(msg);
             cl.sendMsg(msg);
-            paintMap();
+            //paintMap();
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
             while ((c = reader.read()) != '\n') {
                 if (c != '1')
@@ -240,24 +242,29 @@ public class TheGame extends JFrame {
         });
 
     }
-    public void paintMap(){
-        textmap.setText("");
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map.length; j++) {
-                textmap.append(map[i][j] + " ");
-            }
-            textmap.append("\n");
-        }
+    public void paintMap(Integer i,Integer j,Integer k){
+                if(map[i][j]!=roomcount+1) {
+                    try {
+                        img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\"+k+".png"));
+                        img = img.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
+                        icon = new ImageIcon(img);
+                        minimap[j][i].setIcon(icon);
+                    }
+                    catch (IOException e){
+                        System.out.println(e);
+                    }
+
+                }
     }
 
 
     public void paint(){
-        int a= 2 + (int) ( Math.random() * 10 );
+        int a= 2 + (int) ( Math.random() * roomcount-1);
+        currentallpos=cl.getallpospos();
         String temp="";
-        if (map[currentpos[0]][currentpos[1]]==0) {
+        if (map[currentpos[0]][currentpos[1]]==0 && map[currentpos[0]][currentpos[1]]!=roomcount+1) {
         //System.out.println(currentpos[0]+" "+currentpos[1]);
             map[currentpos[0]][currentpos[1]] = a;
-            paintMap();
         }
         else{
             a=map[currentpos[0]][currentpos[1]];
@@ -266,6 +273,8 @@ public class TheGame extends JFrame {
         msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+a;
             //msg+='@';
         //}
+        for (int i=0;i<currentallpos.length;i++)
+        paintMap(currentallpos[1][i],currentallpos[0][i],currentallpos[2][i]);
         System.out.println(msg);
         try {
             cl.sendMsg(msg);

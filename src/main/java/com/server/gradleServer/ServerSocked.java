@@ -60,14 +60,15 @@ public class ServerSocked {
             }
         }
 
-    public void sendAllClientsPosition(String msg) {
+    public void sendAllClientsPosition() {
         String str = "Clients_post";
         for (MyThread o : serverList) {
-            str +=o.getAmInX()+"@";
-            str +=o.getAmInY()+"@";
-            str +=o.getAmInRoom();
+                str +=o.getAmInX()+"@";
+                str +=o.getAmInY()+"@";
+                str +=o.getAmInRoom()+"@";
         }
         sendMessageToAllClients(str);
+        System.out.println("Send = " + str);
     }
 
     public void sendAllNicknameAndHero() {
@@ -77,6 +78,7 @@ public class ServerSocked {
             str +=">"+ o.gethero()+"-";
         }
         sendMessageToAllClients(str);
+
     }
 
     public void CheckAllClientReady() {
@@ -96,15 +98,16 @@ public class ServerSocked {
             sendMessageToAllClients("Start_Game");
             int[] x = new int[4];
             int[] y = new int[4];
-            x[0] = -1; x[1] = 10; x[2] = 0; x[3] = 9;//Не Забыть проверить правильность расположения ВСЕХ игроков!
+            x[0] = 0; x[1] = 10; x[2] = 0; x[3] = 10;//Не Забыть проверить правильность расположения ВСЕХ игроков!
             y[0] = 0; y[1] = 0; y[2] = 10; y[3] = 10;
             int j=0;
             String str;
             for (MyThread o : serverList) {
-                str ="Client_posit";
+                str ="Clients_post";
                 o.setAmIn(x[j],y[j]);
-                str += o.getAmInX()+"@"+o.getAmInY();
+                str += o.getAmInX()+"@"+o.getAmInY()+"@"+0;
                 o.sendMsg(str);
+                System.out.println("ready pos = "+ str);
                 j++;
             }
             System.out.println("All_ready!!");

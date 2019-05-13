@@ -27,8 +27,11 @@ public class ClientUI extends JFrame{
 
     private PrintWriter out;
     private Scanner in;
+    private int PlayerCount;
+
 
     private int[] pos=new int[2];
+    private int[][] allpos;
     private Integer ChosenHero;
     private String clientName = "";
     private String  PlayerStatusNotReady= "Client_not_ready";
@@ -37,12 +40,15 @@ public class ClientUI extends JFrame{
     public int[] getpos(){
         return this.pos;
     }
+    public int[][] getallpospos(){
+        return this.allpos;
+    }
 
     public ClientUI() {
             fromserver = null;
             DefaultListModel dlm = new DefaultListModel();
             try {
-                fromserver = new Socket("localhost", 2620);//25.44.20.209
+                fromserver = new Socket("25.44.20.209", 2620);//25.44.20.209
                 in = new Scanner(fromserver.getInputStream());
                 out = new PrintWriter(fromserver.getOutputStream(), true);
             } catch (IOException e) {
@@ -54,8 +60,11 @@ public class ClientUI extends JFrame{
             frame.setContentPane(panel1);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
-            comboBox1.addItem("Hugo_the_Glorius");
-            comboBox1.addItem("Krutzbeck");
+            comboBox1.addItem("Линделл");
+            comboBox1.addItem("Крутцбек");
+            comboBox1.addItem("Брат_Геринн");
+            comboBox1.addItem("Хьюго_Великолепный");
+
             textArea1.setLineWrap(true);
             frame.setVisible(true);
 
@@ -110,7 +119,7 @@ public class ClientUI extends JFrame{
 
     public void close(){
         try {
-            // отправляем служебное сообщение, которое является признаком того, что клиент вышел из чата
+            // отправляем служебное сообщение, которое является признаком того, что клиент вышел из лобби
             sendMsg("##session##end##");
             out.close();
             in.close();
@@ -137,8 +146,6 @@ public class ClientUI extends JFrame{
             }
             if (inMes.startsWith("Client_nick")) {
                 textArea1.setText("");
-                //comboBox1.removeAllItems(); ОГРАНИЧЕНИЕ НА ОДИНАКОВЫХ ПЕРСОНАЖЕЙ???
-                //comboBox1.addItem(ChosenHero);
                 inMes = inMes.substring(11,inMes.length());
                 String[] subStr;
                 subStr = inMes.split("-");
@@ -148,6 +155,7 @@ public class ClientUI extends JFrame{
             }
             if (inMes.indexOf('@') != -1) {
                 jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
+                PlayerCount=inMes.charAt(1);
             }
             if(inMes.startsWith("Client_posit")){
                 inMes = inMes.substring(12,inMes.length());
@@ -155,6 +163,20 @@ public class ClientUI extends JFrame{
                 subStr = inMes.split("@");
                 for(int j=0;j<subStr.length;j++) {
                     this.pos[j] = Integer.valueOf(subStr[j]);
+                }
+            }
+            if(inMes.startsWith("Clients_post")){
+                inMes = inMes.substring(12,inMes.length());
+                String[] subStr;
+                subStr = inMes.split("@");
+                int k=0;
+                for(int j=0;j<subStr.length;j++) {
+                    for(int i=0;i<3;i++) {
+                            this.allpos=new int[3][0];
+                            this.allpos[i][k] =Integer.valueOf(subStr[j]);
+                    }
+                    if(k<PlayerCount)
+                    k++;
                 }
             }
             else{
