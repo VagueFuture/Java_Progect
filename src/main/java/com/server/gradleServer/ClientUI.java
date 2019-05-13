@@ -41,7 +41,7 @@ public class ClientUI extends JFrame{
         fromserver = null;
         DefaultListModel dlm = new DefaultListModel();
         try {
-            fromserver = new Socket("25.44.20.209", 2620);
+            fromserver = new Socket("localhost", 2620);//25.44.20.209
             in = new Scanner(fromserver.getInputStream());
             out = new PrintWriter(fromserver.getOutputStream(), true);
         } catch (IOException e) {
