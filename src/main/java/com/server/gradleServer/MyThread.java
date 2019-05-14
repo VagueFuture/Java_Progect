@@ -14,6 +14,7 @@ public class MyThread implements Runnable {
     private String nick;
     private String hero;
     private int x;
+    private int number;
     private int y;
     private int room;
     private boolean ready;
@@ -40,6 +41,7 @@ public class MyThread implements Runnable {
             while (true) {
                 // сервер отправляет сообщение
                 server.sendMessageToAllClients("@" + clients_count);
+                this.number = clients_count;
                 break;
             }
 
@@ -81,10 +83,9 @@ public class MyThread implements Runnable {
                         clientMessage = clientMessage.substring(12,clientMessage.length());
                         String[] subStr;
                         subStr = clientMessage.split("@");
-                        int a= 2 + (int) ( Math.random() * 11-1);
                         this.x = Integer.valueOf(subStr[0]);
                         this.y = Integer.valueOf(subStr[1]);
-                        this.room = a;
+                        this.room = Integer.valueOf(subStr[2]);
                         server.sendAllClientsPosition();
                         System.out.println("get! x y = "+this.x+" "+this.y);
                         System.out.println("get! room = "+this.room);
@@ -134,6 +135,10 @@ public class MyThread implements Runnable {
 
     public int getAllClients() {
         return this.clients_count;
+    }
+
+    public int getClientNumber() {
+        return this.number;
     }
 
     public void setAmIn(int x,int y) {

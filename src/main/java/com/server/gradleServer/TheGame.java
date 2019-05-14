@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -28,7 +29,7 @@ public class TheGame extends JFrame {
     private JTextArea textmap=new JTextArea();
     private JFrame frame;
     private Icon icon;
-    private Image img;
+    private BufferedImage img;
     private FileReader reader;
 
     private ClientUI cl;
@@ -59,6 +60,7 @@ public class TheGame extends JFrame {
 
         cl=tcl;
 
+        currentallpos = cl.getallpospos();
         currentpos=cl.getpos();
         /////////////////////Противник
         f.fill = GridBagConstraints.LAST_LINE_START;
@@ -142,39 +144,43 @@ public class TheGame extends JFrame {
 
         try {
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\1.png"));
-            img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
+            //img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
+            img = ChangeImage(img,0,800,600,0.8,0.8);
             icon = new ImageIcon(img);
             room.setIcon(icon);
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Hero\\"+ Hero +".png"));
-            img = img.getScaledInstance(390, 250,  java.awt.Image.SCALE_SMOOTH);
+            //img = img.getScaledInstance(390, 250,  java.awt.Image.SCALE_SMOOTH);
+            img = ChangeImage(img,0,390,250,0.3,0.26);
             icon = new ImageIcon(img);
             hero.setIcon(icon);
 
+
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\fon.png"));
-            img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
+            img = ChangeImage(img,0,25,25,0.15,0.15);
+            //img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             for(int i=0; i<minimap.length;i++)
                 for(int j=0;j<minimap.length;j++) {
                     minimap[i][j].setIcon(icon);
                 }
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\12.png"));
-            img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
+            //img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
+            img = ChangeImage(img,0,25,25,0.17,0.18);
             icon = new ImageIcon(img);
             minimap[5][5].setIcon(icon);
             map[5][5]=12;
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
-            msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+'2';
             //msg+='@';
             //}
-            System.out.println(msg);
-            cl.sendMsg(msg);
+            //System.out.println(msg);
+            //cl.sendMsg(msg);
             //paintMap();
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
             while ((c = reader.read()) != '\n') {
                 if (c != '1')
                     status += Character.toString(c);
-                System.out.print((char) c);
+                //System.out.print((char) c);
             }
             HeroView.setText(status);
             status = "";
@@ -187,9 +193,9 @@ public class TheGame extends JFrame {
         up.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentpos[0]-1>=0){
-                    currentpos[0]-=1;
-                    paint();
+                if (currentallpos[0][0]-1>=0){
+                    currentallpos[0][0]-=1;
+                    paint(0);
                 }
                 else{
                     HeroView.setText("Нельзя двигаться на юг");
@@ -199,10 +205,9 @@ public class TheGame extends JFrame {
         down.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(currentpos[0]+1);
-                if (currentpos[0]+1<map.length){
-                currentpos[0]+=1;
-                paint();
+                if (currentallpos[0][0]+1<map.length){
+                    currentallpos[0][0]+=1;
+                paint(-180);
             }
                 else{
                 HeroView.setText("Нельзя двигаться на север");
@@ -212,9 +217,9 @@ public class TheGame extends JFrame {
         left.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentpos[1]-1>=0) {
-                    currentpos[1]-=1;
-                    paint();
+                if(currentallpos[1][0]-1>=0) {
+                    currentallpos[1][0]-=1;
+                    paint(-90);
                 }
                 else{
                     HeroView.setText("Нельзя двигаться на запад");
@@ -224,9 +229,9 @@ public class TheGame extends JFrame {
         right.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentpos[1]+1<map.length) {
-                    currentpos[1] += 1;
-                    paint();
+                if(currentallpos[1][0]+1<map.length) {
+                    currentallpos[1][0] += 1;
+                    paint(90);
                 }
                 else{
                     HeroView.setText("Нельзя двигаться на восток");
@@ -242,11 +247,12 @@ public class TheGame extends JFrame {
         });
 
     }
-    public void paintMap(Integer i,Integer j,Integer k){
+    public void paintMap(Integer i,Integer j,Integer k,int angle){
                 if(map[i][j]!=roomcount+1) {
                     try {
                         img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\"+k+".png"));
-                        img = img.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
+                        //img = img.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
+                        img = ChangeImage(img,angle,25,25,0.1,0.1);
                         icon = new ImageIcon(img);
                         minimap[j][i].setIcon(icon);
                     }
@@ -258,29 +264,12 @@ public class TheGame extends JFrame {
     }
 
 
-    public void paint(){
-        int a= 2 + (int) ( Math.random() * roomcount-1);
-        currentallpos=cl.getallpospos();
+    public void paint(int angle){//////////ФИКСАНУТЬ ЧЕРЕП В 1 0
         String temp="";
-        if (map[currentpos[0]][currentpos[1]]==0 && map[currentpos[0]][currentpos[1]]!=roomcount+1) {
-        //System.out.println(currentpos[0]+" "+currentpos[1]);
-            map[currentpos[0]][currentpos[1]] = a;
-        }
-        else{
-            a=map[currentpos[0]][currentpos[1]];
-        }
-        //for (int j = 0; j < 2; j++) {
-        msg="Client_posit"+currentpos[0]+"@"+currentpos[1]+"@"+a;
-            //msg+='@';
-        //}
-        for (int i=0;i<currentallpos.length;i++)
-        paintMap(currentallpos[1][i],currentallpos[0][i],currentallpos[2][i]);
-        System.out.println(msg);
-        try {
-            cl.sendMsg(msg);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        cl.getallpospos();
+        System.out.println("Poluchil "+currentallpos[0][0]+" "+currentallpos[1][0]+" "+currentallpos[2][0]);
+        msg="Client_posit"+currentallpos[0][0]+"@"+currentallpos[1][0]+"@"+currentallpos[2][0];
+        paintMap(currentallpos[0][0],currentallpos[1][0],currentallpos[2][0],angle);
         try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv")){
             while((c=reader.read())!=-1){
                   temp+=Character.toString(c);
@@ -288,7 +277,7 @@ public class TheGame extends JFrame {
                     temp="";
                 }
                 //System.out.println(temp);
-                if(temp.equals(Integer.toString(a))) {
+                if(temp.equals(Integer.toString(currentallpos[2][0]))) {
                     while((c=reader.read())!='\n') {
                         status+=Character.toString(c);
                         System.out.print((char) c);
@@ -304,13 +293,47 @@ public class TheGame extends JFrame {
         HeroView.setText(status);
         status="";
         try {
-            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ a +".png"));
-            img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
+            ////img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ currentallpos[2][0] +".png"));
+            img = ChangeImage(img,0,800,600,0.5,0.5);
             icon = new ImageIcon(img);
             room.setIcon(icon);
         } catch (IOException e) {
             System.out.println(e);
         }
+        System.out.println("Отправил="+msg);
+        try {
+            cl.sendMsg(msg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
+    public BufferedImage ChangeImage(BufferedImage buffImage, double angle,int width1,int height1, double sx, double sy) {
+        BufferedImage Image = new BufferedImage(width1, height1, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = Image.createGraphics();
+        g.scale(sx,sy);
+        g.drawImage(buffImage, 0, 0,null);
+
+        double radian = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(radian));
+        double cos = Math.abs(Math.cos(radian));
+        int width  = Image.getWidth();
+        int height = Image.getHeight();
+        int nWidth = (int) Math.floor((double) width * cos + (double) height * sin);
+        int nHeight = (int) Math.floor((double) height * cos + (double) width * sin);
+        BufferedImage ChangeImage = new BufferedImage(nWidth, nHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = ChangeImage.createGraphics();
+        graphics.setColor(Color.WHITE);
+
+        //graphics.fillRect(0, 0, nWidth, nHeight);
+       // graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        graphics.translate((nWidth - width) / 2, (nHeight - height) / 2);
+        graphics.rotate(radian, (double) (width / 2), (double) (height / 2));
+        graphics.drawImage(Image, 0, 0,null);
+        graphics.dispose();
+        return ChangeImage;
+    }
+
 }
 

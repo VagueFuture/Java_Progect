@@ -30,8 +30,6 @@ public class ServerSocked {
 
         while (true) {
 
-
-
                 System.out.print("Waiting for a client...");
                 Client = servers.accept();
                 //serverList.add(new MyThread(Client));
@@ -98,17 +96,22 @@ public class ServerSocked {
             sendMessageToAllClients("Start_Game");
             int[] x = new int[4];
             int[] y = new int[4];
-            x[0] = 0; x[1] = 10; x[2] = 0; x[3] = 10;//Не Забыть проверить правильность расположения ВСЕХ игроков!
+            x[0] = -1; x[1] = 10; x[2] = 0; x[3] = 10;//Не Забыть проверить правильность расположения ВСЕХ игроков!
             y[0] = 0; y[1] = 0; y[2] = 10; y[3] = 10;
             int j=0;
-            String str;
+            String str = "Clients_post";
             for (MyThread o : serverList) {
-                str ="Clients_post";
-                o.setAmIn(x[j],y[j]);
-                str += o.getAmInX()+"@"+o.getAmInY()+"@"+0;
-                o.sendMsg(str);
-                System.out.println("ready pos = "+ str);
+                o.setAmIn(x[j], y[j]);
+                str += o.getAmInX() + "@" + o.getAmInY() + "@" + 0+"@";
                 j++;
+            }
+            sendMessageToAllClients(str);
+                System.out.println("ready pos = "+ str);
+
+            for (MyThread o : serverList) {
+                str ="Client_numbr";
+                str += o.getClientNumber();
+                o.sendMsg(str);
             }
             System.out.println("All_ready!!");
         }else
