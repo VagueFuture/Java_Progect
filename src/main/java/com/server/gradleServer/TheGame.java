@@ -19,14 +19,16 @@ public class TheGame extends JFrame {
     private JPanel jpanel1;
     private JPanel jpanel_minimap = new JPanel();
     private JLabel room=new JLabel();
+    private JLabel card=new JLabel();
     private JTextArea HeroView=new JTextArea();
     private JButton left=new JButton("На Запад");
     private JButton right=new JButton("На Восток");
     private JButton down=new JButton("На Север");
     private JButton up=new JButton("На Юг");
+    private JButton find = new JButton("Исследовать");
+    private JButton skill = new JButton("Проверка");
     private JLabel hero=new JLabel();
     private JLabel enemy=new JLabel();
-    private JTextArea textmap=new JTextArea();
     private JFrame frame;
     private Icon icon;
     private BufferedImage img;
@@ -40,8 +42,9 @@ public class TheGame extends JFrame {
     private int c;
     private String status="";
     private int[] currentpos;
-    private int[][] currentallpos;
+    private int[] currentallpos;
     private String msg;
+    private int mynumber;
 
     private final int mapsize=11;
     private final int roomcount=11;
@@ -59,9 +62,6 @@ public class TheGame extends JFrame {
         frame.setContentPane(jpanel1);
 
         cl=tcl;
-
-        currentallpos = cl.getallpospos();
-        currentpos=cl.getpos();
         /////////////////////Противник
         f.fill = GridBagConstraints.LAST_LINE_START;
         f.gridx=0;
@@ -79,14 +79,14 @@ public class TheGame extends JFrame {
      //   f.fill = GridBagConstraints.BOTH;
         f.gridx = 0;
         f.gridy = 0;
-        f.gridheight=2;
+        f.gridheight=4;
         jpanel1.add(room, f);
         f.gridheight=1;
 ////////////////////////////Комната
 
 /////////////////////Текстовое поле
         f.gridx = 0;
-        f.gridy = 2;
+        f.gridy = 4;
         f.fill = GridBagConstraints.BOTH;
         HeroView.setEditable(false);
         HeroView.setLineWrap(true);
@@ -94,11 +94,13 @@ public class TheGame extends JFrame {
 /////////////////////Текстовое поле
 ///////////////////////////Кароточки на карте
 
-        f.gridwidth = 2;
+        //f.gridwidth = 2;
         //f.fill = GridBagConstraints.VERTICAL;
         f.gridx=1;
         f.gridy=0;
         f.gridwidth = 3;
+        Color col = new Color(255,185,0);
+        jpanel_minimap.setBackground(col);
         jpanel1.add(jpanel_minimap,f);
         ff.fill = GridBagConstraints.FIRST_LINE_START;
         for(int i=0; i<minimap.length;i++)
@@ -121,42 +123,58 @@ public class TheGame extends JFrame {
         f.gridwidth = 1;
 /////////////////////Герой
 
+// ////////////////////Исследование
+        f.fill = GridBagConstraints.FIRST_LINE_START;
+        f.gridx=3;
+        f.gridy=1;
+        f.gridwidth = 4;
+        jpanel1.add(card,f);
+        f.gridwidth = 1;
+/////////////////////Исследование
+
 /////////////////////Кнопки
         f.fill = GridBagConstraints.BOTH;
         f.gridwidth = 1;
         f.gridx=1;
-        f.gridy=2;
+        f.gridy=4;
         jpanel1.add(down,f);
 
         f.gridx=2;
-        f.gridy=2;
+        f.gridy=4;
         jpanel1.add(left,f);
 
         f.gridx=3;
-        f.gridy=2;
+        f.gridy=4;
         jpanel1.add(right,f);
 
         f.gridx=4;
-        f.gridy=2;
+        f.gridy=4;
         jpanel1.add(up,f);
+
+        f.gridx=1;
+        f.gridy=2;
+        jpanel1.add(skill,f);
+
+        f.gridx=1;
+        f.gridy=3;
+        jpanel1.add(find,f);
 
 /////////////////////Кнопки
 
         try {
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\1.png"));
             //img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
-            img = ChangeImage(img,0,800,600,0.8,0.8);
+            img = ChangeImage(img,0,800,600,1,1);
             icon = new ImageIcon(img);
             room.setIcon(icon);
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Hero\\"+ Hero +".png"));
             //img = img.getScaledInstance(390, 250,  java.awt.Image.SCALE_SMOOTH);
-            img = ChangeImage(img,0,390,250,0.3,0.26);
+            img = ChangeImage(img,0,390,250,1,1);
             icon = new ImageIcon(img);
             hero.setIcon(icon);
 
-
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\fon.png"));
-            img = ChangeImage(img,0,25,25,0.15,0.15);
+            img = ChangeImage(img,0,25,25,0.5,0.5);
             //img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             for(int i=0; i<minimap.length;i++)
@@ -165,17 +183,13 @@ public class TheGame extends JFrame {
                 }
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\12.png"));
             //img = img.getScaledInstance(25, 25,  java.awt.Image.SCALE_SMOOTH);
-            img = ChangeImage(img,0,25,25,0.17,0.18);
+            img = ChangeImage(img,0,25,25,0.5,0.5);
             icon = new ImageIcon(img);
             minimap[5][5].setIcon(icon);
             map[5][5]=12;
-            //jpanel1.add(hero, f);
+            //jpanel1.add(hero, f);]
+
             cl.getdMsg();//Получаю координаты стартовые
-            //msg+='@';
-            //}
-            //System.out.println(msg);
-            //cl.sendMsg(msg);
-            //paintMap();
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
             while ((c = reader.read()) != '\n') {
                 if (c != '1')
@@ -187,14 +201,22 @@ public class TheGame extends JFrame {
         } catch (IOException e) {
             System.out.println(e);
         }
+        currentallpos=cl.getallpospos();
+        System.out.println("Poluchil the game-");
+        for(int i=0;i<currentallpos.length;i++) {
+            System.out.println(currentallpos[i]);
+        }
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         up.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentallpos[0][0]-1>=0){
-                    currentallpos[0][0]-=1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+
+                if (currentallpos[0+3*(mynumber-1)]-1>=0){
+                    currentallpos[0+3*(mynumber-1)]-=1;
                     paint(0);
                 }
                 else{
@@ -205,8 +227,11 @@ public class TheGame extends JFrame {
         down.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentallpos[0][0]+1<map.length){
-                    currentallpos[0][0]+=1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+                System.out.println(0+3*(mynumber-1));
+                if (currentallpos[0+3*(mynumber-1)]+1<map.length){
+                    currentallpos[0+3*(mynumber-1)]+=1;
                 paint(-180);
             }
                 else{
@@ -217,8 +242,10 @@ public class TheGame extends JFrame {
         left.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentallpos[1][0]-1>=0) {
-                    currentallpos[1][0]-=1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+                if(currentallpos[1+3*(mynumber-1)]-1>=0) {
+                    currentallpos[1+3*(mynumber-1)]-=1;
                     paint(-90);
                 }
                 else{
@@ -229,8 +256,10 @@ public class TheGame extends JFrame {
         right.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentallpos[1][0]+1<map.length) {
-                    currentallpos[1][0] += 1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+                if(currentallpos[1+3*(mynumber-1)]+1<map.length) {
+                    currentallpos[1+3*(mynumber-1)]+= 1;
                     paint(90);
                 }
                 else{
@@ -252,7 +281,7 @@ public class TheGame extends JFrame {
                     try {
                         img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\"+k+".png"));
                         //img = img.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
-                        img = ChangeImage(img,angle,25,25,0.1,0.1);
+                        img = ChangeImage(img,angle,25,25,0.5,0.5);
                         icon = new ImageIcon(img);
                         minimap[j][i].setIcon(icon);
                     }
@@ -264,12 +293,21 @@ public class TheGame extends JFrame {
     }
 
 
-    public void paint(int angle){//////////ФИКСАНУТЬ ЧЕРЕП В 1 0
+    public void paint(int angle){
         String temp="";
+        int a= 2 + (int) ( Math.random() * roomcount-1);
         cl.getallpospos();
-        System.out.println("Poluchil "+currentallpos[0][0]+" "+currentallpos[1][0]+" "+currentallpos[2][0]);
-        msg="Client_posit"+currentallpos[0][0]+"@"+currentallpos[1][0]+"@"+currentallpos[2][0];
-        paintMap(currentallpos[0][0],currentallpos[1][0],currentallpos[2][0],angle);
+        if (map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]]==0 && map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]]!=roomcount+1) {
+            //System.out.println(currentpos[0]+" "+currentpos[1]);
+            map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]] = a;
+            currentallpos[2]=a;
+        }
+        else{
+            currentallpos[2+3*(mynumber-1)]=map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]];
+        }
+        System.out.println("Poluchil "+currentallpos[0+3*(mynumber-1)]+" "+currentallpos[1+3*(mynumber-1)]+" "+currentallpos[2+3*(mynumber-1)]);
+        msg="Client_posit"+currentallpos[0+3*(mynumber-1)]+"@"+currentallpos[1+3*(mynumber-1)]+"@"+currentallpos[2+3*(mynumber-1)];
+        paintMap(currentallpos[0+3*(mynumber-1)],currentallpos[1+3*(mynumber-1)],currentallpos[2+3*(mynumber-1)],angle);
         try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv")){
             while((c=reader.read())!=-1){
                   temp+=Character.toString(c);
@@ -277,7 +315,7 @@ public class TheGame extends JFrame {
                     temp="";
                 }
                 //System.out.println(temp);
-                if(temp.equals(Integer.toString(currentallpos[2][0]))) {
+                if(temp.equals(Integer.toString(currentallpos[2+3*(mynumber-1)]))) {
                     while((c=reader.read())!='\n') {
                         status+=Character.toString(c);
                         System.out.print((char) c);
@@ -293,9 +331,9 @@ public class TheGame extends JFrame {
         HeroView.setText(status);
         status="";
         try {
-            ////img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
-            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ currentallpos[2][0] +".png"));
-            img = ChangeImage(img,0,800,600,0.5,0.5);
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ currentallpos[2+3*(mynumber-1)] +".png"));
+            //img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
+            img = ChangeImage(img,0,800,600,1,1);
             icon = new ImageIcon(img);
             room.setIcon(icon);
         } catch (IOException e) {

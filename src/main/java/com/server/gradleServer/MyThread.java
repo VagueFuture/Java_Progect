@@ -40,7 +40,7 @@ public class MyThread implements Runnable {
         try {
             while (true) {
                 // сервер отправляет сообщение
-                server.sendMessageToAllClients("@" + clients_count);
+                server.sendMessageToAllClients("%" + clients_count);
                 this.number = clients_count;
                 break;
             }

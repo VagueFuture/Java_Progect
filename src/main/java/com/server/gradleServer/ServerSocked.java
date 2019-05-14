@@ -96,7 +96,7 @@ public class ServerSocked {
             sendMessageToAllClients("Start_Game");
             int[] x = new int[4];
             int[] y = new int[4];
-            x[0] = -1; x[1] = 10; x[2] = 0; x[3] = 10;//Не Забыть проверить правильность расположения ВСЕХ игроков!
+            x[0] = 0; x[1] = 10; x[2] = 0; x[3] = 10;//Не Забыть проверить правильность расположения ВСЕХ игроков!
             y[0] = 0; y[1] = 0; y[2] = 10; y[3] = 10;
             int j=0;
             String str = "Clients_post";

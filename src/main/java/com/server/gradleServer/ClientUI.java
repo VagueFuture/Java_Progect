@@ -27,21 +27,21 @@ public class ClientUI extends JFrame{
 
     private PrintWriter out;
     private Scanner in;
-    private int PlayerCount;
+    private int PlayerCount=0;
+    private int[] allpos;
+    private int mynumber;
 
-
-    private int[] pos=new int[2];
-    private int[][] allpos=new int[3][1];
     private Integer ChosenHero;
     private String clientName = "";
     private String  PlayerStatusNotReady= "Client_not_ready";
     private String PlayerStatusReady = "Client_ready";
 
-    public int[] getpos(){
-        return this.pos;
-    }
-    public int[][] getallpospos(){
+    public int[] getallpospos(){
         return this.allpos;
+    }
+
+    public int getmynumber(){
+        return this.mynumber;
     }
 
     public ClientUI() {
@@ -140,6 +140,13 @@ public class ClientUI extends JFrame{
     public void getdMsg() {
         if (in.hasNext()) {
                 String inMes = in.next();
+            if(inMes.startsWith("Client_numbr")){
+                inMes = inMes.substring(12,inMes.length());
+                String[] subStr;
+                subStr = inMes.split("@");
+                this.mynumber=Integer.valueOf(subStr[0]);
+                System.out.println("mynumber "+mynumber);
+            }
             if(inMes.startsWith("Start_Game")){
                 Game.main(null,ChosenHero,fromserver,this);
                 frame.setVisible(false);
@@ -155,26 +162,26 @@ public class ClientUI extends JFrame{
             }
             if (inMes.indexOf('@') != -1) {
                 jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
-                PlayerCount=inMes.charAt(1);
-            }
-            if(inMes.startsWith("Client_posit")){
-                inMes = inMes.substring(12,inMes.length());
-                String[] subStr;
-                subStr = inMes.split("@");
-                for(int j=0;j<subStr.length;j++) {
-                    this.pos[j] = Integer.valueOf(subStr[j]);
-                }
+                //PlayerCount++;
+
+                PlayerCount=Character.getNumericValue(inMes.charAt(1));
+                //System.out.println(PlayerCount);
             }
             if(inMes.startsWith("Clients_post")){
                 inMes = inMes.substring(12,inMes.length());
                 String[] subStr;
                 subStr = inMes.split("@");
                 //int k=0;
-                for(int j=0;j<3;j++) {
-                            this.allpos[j][0] =Integer.valueOf(subStr[j]);
-                            System.out.println(allpos[j][0]);
-                    //k++;
+                System.out.println("Poluchil clientui");
+                int[] allpos = new int[PlayerCount*3];
+                //System.out.println(PlayerCount);
+                //System.out.println(allpos.length);
+                for(int i=0;i<subStr.length;i++){
+                    allpos[i]=Integer.valueOf(subStr[i]);
+                    //System.out.println(subStr[i]);
+                    //System.out.println(allpos[i]);
                 }
+                this.allpos=allpos;
             }
             else{
                 }
