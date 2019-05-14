@@ -38,8 +38,9 @@ public class TheGame extends JFrame {
     private int c;
     private String status="";
     private int[] currentpos;
-    private int[][] currentallpos;
+    private int[] currentallpos;
     private String msg;
+    private int mynumber;
 
     private final int mapsize=11;
     private final int roomcount=11;
@@ -57,9 +58,6 @@ public class TheGame extends JFrame {
         frame.setContentPane(jpanel1);
 
         cl=tcl;
-
-        currentallpos = cl.getallpospos();
-        currentpos=cl.getpos();
         /////////////////////Противник
         f.fill = GridBagConstraints.LAST_LINE_START;
         f.gridx=0;
@@ -162,13 +160,9 @@ public class TheGame extends JFrame {
             icon = new ImageIcon(img);
             minimap[5][5].setIcon(icon);
             map[5][5]=12;
-            //jpanel1.add(hero, f);
+            //jpanel1.add(hero, f);]
+
             cl.getdMsg();//Получаю координаты стартовые
-            //msg+='@';
-            //}
-            //System.out.println(msg);
-            //cl.sendMsg(msg);
-            //paintMap();
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
             while ((c = reader.read()) != '\n') {
                 if (c != '1')
@@ -180,14 +174,22 @@ public class TheGame extends JFrame {
         } catch (IOException e) {
             System.out.println(e);
         }
+        currentallpos=cl.getallpospos();
+        System.out.println("Poluchil the game-");
+        for(int i=0;i<currentallpos.length;i++) {
+            System.out.println(currentallpos[i]);
+        }
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         up.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentallpos[0][0]-1>=0){
-                    currentallpos[0][0]-=1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+
+                if (currentallpos[0+3*(mynumber-1)]-1>=0){
+                    currentallpos[0+3*(mynumber-1)]-=1;
                     paint();
                 }
                 else{
@@ -198,8 +200,11 @@ public class TheGame extends JFrame {
         down.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentallpos[0][0]+1<map.length){
-                    currentallpos[0][0]+=1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+                System.out.println(0+3*(mynumber-1));
+                if (currentallpos[0+3*(mynumber-1)]+1<map.length){
+                    currentallpos[0+3*(mynumber-1)]+=1;
                 paint();
             }
                 else{
@@ -210,8 +215,10 @@ public class TheGame extends JFrame {
         left.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentallpos[1][0]-1>=0) {
-                    currentallpos[1][0]-=1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+                if(currentallpos[1+3*(mynumber-1)]-1>=0) {
+                    currentallpos[1+3*(mynumber-1)]-=1;
                     paint();
                 }
                 else{
@@ -222,8 +229,10 @@ public class TheGame extends JFrame {
         right.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentallpos[1][0]+1<map.length) {
-                    currentallpos[1][0] += 1;
+                mynumber=cl.getmynumber();
+                System.out.println("num-"+mynumber);
+                if(currentallpos[1+3*(mynumber-1)]+1<map.length) {
+                    currentallpos[1+3*(mynumber-1)]+= 1;
                     paint();
                 }
                 else{
@@ -256,12 +265,21 @@ public class TheGame extends JFrame {
     }
 
 
-    public void paint(){//////////ФИКСАНУТЬ ЧЕРЕП В 1 0
+    public void paint(){
         String temp="";
+        int a= 2 + (int) ( Math.random() * roomcount-1);
         cl.getallpospos();
-        System.out.println("Poluchil "+currentallpos[0][0]+" "+currentallpos[1][0]+" "+currentallpos[2][0]);
-        msg="Client_posit"+currentallpos[0][0]+"@"+currentallpos[1][0]+"@"+currentallpos[2][0];
-        paintMap(currentallpos[0][0],currentallpos[1][0],currentallpos[2][0]);
+        if (map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]]==0 && map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]]!=roomcount+1) {
+            //System.out.println(currentpos[0]+" "+currentpos[1]);
+            map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]] = a;
+            currentallpos[2]=a;
+        }
+        else{
+            currentallpos[2+3*(mynumber-1)]=map[currentallpos[0+3*(mynumber-1)]][currentallpos[1+3*(mynumber-1)]];
+        }
+        System.out.println("Poluchil "+currentallpos[0+3*(mynumber-1)]+" "+currentallpos[1+3*(mynumber-1)]+" "+currentallpos[2+3*(mynumber-1)]);
+        msg="Client_posit"+currentallpos[0+3*(mynumber-1)]+"@"+currentallpos[1+3*(mynumber-1)]+"@"+currentallpos[2+3*(mynumber-1)];
+        paintMap(currentallpos[0+3*(mynumber-1)],currentallpos[1+3*(mynumber-1)],currentallpos[2+3*(mynumber-1)]);
         try(Reader reader= new FileReader("src\\main\\resources\\Database\\bd.csv")){
             while((c=reader.read())!=-1){
                   temp+=Character.toString(c);
@@ -269,7 +287,7 @@ public class TheGame extends JFrame {
                     temp="";
                 }
                 //System.out.println(temp);
-                if(temp.equals(Integer.toString(currentallpos[2][0]))) {
+                if(temp.equals(Integer.toString(currentallpos[2+3*(mynumber-1)]))) {
                     while((c=reader.read())!='\n') {
                         status+=Character.toString(c);
                         System.out.print((char) c);
@@ -285,7 +303,7 @@ public class TheGame extends JFrame {
         HeroView.setText(status);
         status="";
         try {
-            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ currentallpos[2][0] +".png"));
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\"+ currentallpos[2+3*(mynumber-1)] +".png"));
             img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(img);
             room.setIcon(icon);
