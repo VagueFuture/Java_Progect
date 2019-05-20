@@ -6,7 +6,6 @@ body {
     background-color: #edeff2;
     font-family: "Calibri", "Roboto", sans-serif;
 }
-
 .chat_window {
     position: absolute;
     width: calc(100% - 20px);
@@ -189,7 +188,6 @@ body {
     display: inline-block;
     line-height: 48px;
 }
-
 .message_template {
     display: none;
 }
