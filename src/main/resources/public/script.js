@@ -1,3 +1,10 @@
+var usernamePage = document.querySelector('#username-page');
+var chatPage = document.querySelector('#chat-page');
+var usernameForm = document.querySelector('#usernameForm');
+var messageForm = document.querySelector('#messageForm');
+var messageInput = document.querySelector('#message_input_value');
+var messageArea = document.querySelector('#messageArea');
+var connectingElement = document.querySelector('.connecting');
 
 function connect() {
     var socket = new SockJS('/chat-messaging');
@@ -9,6 +16,7 @@ function connect() {
             console.log("+");
             var data = JSON.parse(response.body);
             draw("left", data.message);
+            stompClient.send("/app/addUser", {}, JSON.stringify({name: $("#userName").val(), type: 'JOIN'}))
         });
     });
 }
@@ -28,8 +36,8 @@ function disconnect(){
 }
 function getDataFromApi() {
     $.ajax({
-        url:"/getdata",
         type:"GET",
+        url:"/getdata",
         success:function (data) {
             console.log("GET id = " + data.id);
             console.log("GET name = " + data.name);
