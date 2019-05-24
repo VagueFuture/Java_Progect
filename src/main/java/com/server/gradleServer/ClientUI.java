@@ -30,6 +30,7 @@ public class ClientUI extends JFrame{
     private int PlayerCount=0;
     private int[] allpos;
     private int mynumber;
+    private boolean state;
 
     private Integer ChosenHero;
     private String clientName = "";
@@ -40,8 +41,20 @@ public class ClientUI extends JFrame{
         return this.allpos;
     }
 
+    public boolean getstate(){
+        return this.state;
+    }
+
+    public void setstate(){
+         this.state=false;
+    }
+
     public int getmynumber(){
         return this.mynumber;
+    }
+
+    public int getPlayerCount(){
+        return this.PlayerCount;
     }
 
     public ClientUI() {
@@ -145,7 +158,7 @@ public class ClientUI extends JFrame{
                 String[] subStr;
                 subStr = inMes.split("@");
                 this.mynumber=Integer.valueOf(subStr[0]);
-                System.out.println("mynumber "+mynumber);
+                //System.out.println("mynumber "+mynumber);
             }
             if(inMes.startsWith("Start_Game")){
                 Game.main(null,ChosenHero,fromserver,this);
@@ -160,22 +173,25 @@ public class ClientUI extends JFrame{
                     textArea1.append(subStr[j] + "\n");
                 }
             }
-            if (inMes.indexOf('@') != -1) {
+            if (inMes.startsWith("New_turn")) {
+                this.state=true;
+            }
+            if (inMes.indexOf('%') != -1) {
                 jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
                 //PlayerCount++;
 
-                PlayerCount=Character.getNumericValue(inMes.charAt(1));
-                //System.out.println(PlayerCount);
+                this.PlayerCount=Character.getNumericValue(inMes.charAt(1));
+                System.out.println(PlayerCount);
+                allpos = new int[PlayerCount*4];
             }
             if(inMes.startsWith("Clients_post")){
                 inMes = inMes.substring(12,inMes.length());
                 String[] subStr;
                 subStr = inMes.split("@");
                 //int k=0;
-                System.out.println("Poluchil clientui");
-                int[] allpos = new int[PlayerCount*3];
+                //System.out.println("Poluchil clientui");
                 //System.out.println(PlayerCount);
-                //System.out.println(allpos.length);
+                //System.out.println("mas client ui"+allpos.length);
                 for(int i=0;i<subStr.length;i++){
                     allpos[i]=Integer.valueOf(subStr[i]);
                     //System.out.println(subStr[i]);

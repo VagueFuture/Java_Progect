@@ -64,6 +64,7 @@ public class ServerSocked {
                 str +=o.getAmInX()+"@";
                 str +=o.getAmInY()+"@";
                 str +=o.getAmInRoom()+"@";
+                str +=o.getAmInRoomAngle()+"@";
         }
         sendMessageToAllClients(str);
         System.out.println("Send = " + str);
@@ -124,5 +125,27 @@ public class ServerSocked {
         serverList.remove(client);
     }
 
+    public void CheckAllTurn() {
+        int i= 0;
+        boolean ready;
+        int client = 0;
+        for (MyThread o : serverList) {
+            ready=o.getTurn();
+            if(ready)
+                i++;
+            else
+                i=0;
+
+            client = o.getAllClients();
+        }
+        if(i == client){
+            sendMessageToAllClients("New_turn");
+            for (MyThread o : serverList) {
+                o.setgetTurnFalse();
+            }
+        }else
+            System.out.println("Not_All_End_Turn");
+
+    }
 
 }

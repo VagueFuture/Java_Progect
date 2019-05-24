@@ -17,6 +17,8 @@ public class MyThread implements Runnable {
     private int number;
     private int y;
     private int room;
+    private int angle;
+    private boolean turn;
     private boolean ready;
     private static final String HOST = "25.44.20.209";//25.44.20.209
     private static final int PORT = 2620;
@@ -56,6 +58,8 @@ public class MyThread implements Runnable {
                         break;
                     }
                     //Получаем никнейм от клиента
+                    System.out.println("Client message = "+clientMessage);
+
                     if (clientMessage.startsWith("Client_nick")) {
                         clientMessage = clientMessage.substring(12,clientMessage.length());
                         String[] subStr;
@@ -86,12 +90,19 @@ public class MyThread implements Runnable {
                         this.x = Integer.valueOf(subStr[0]);
                         this.y = Integer.valueOf(subStr[1]);
                         this.room = Integer.valueOf(subStr[2]);
+                        this.angle = Integer.valueOf(subStr[3]);
                         server.sendAllClientsPosition();
                         System.out.println("get! x y = "+this.x+" "+this.y);
                         System.out.println("get! room = "+this.room);
+                        System.out.println("get! angle = "+this.angle);
                     }
 
-                    System.out.println("Client message = "+clientMessage);
+                    if (clientMessage.startsWith("End_of_the_turn")) {
+                        this.turn = true;
+                        server.CheckAllTurn();
+                    }
+
+
 
                 }
                 // останавливаем выполнение потока на 100 мс
@@ -152,6 +163,18 @@ public class MyThread implements Runnable {
 
     public int getAmInY() {
         return this.y;
+    }
+
+    public boolean getTurn() {
+        return this.turn;
+    }
+
+    public void setgetTurnFalse() {
+        this.turn = false;
+    }
+
+    public int getAmInRoomAngle() {
+        return this.angle;
     }
 
     public int getAmInRoom() {
