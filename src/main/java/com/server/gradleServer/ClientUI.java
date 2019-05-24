@@ -30,6 +30,7 @@ public class ClientUI extends JFrame{
     private int PlayerCount=0;
     private int[] allpos;
     private int mynumber;
+    private boolean state;
 
     private Integer ChosenHero;
     private String clientName = "";
@@ -38,6 +39,14 @@ public class ClientUI extends JFrame{
 
     public int[] getallpospos(){
         return this.allpos;
+    }
+
+    public boolean getstate(){
+        return this.state;
+    }
+
+    public void setstate(){
+         this.state=false;
     }
 
     public int getmynumber(){
@@ -164,13 +173,16 @@ public class ClientUI extends JFrame{
                     textArea1.append(subStr[j] + "\n");
                 }
             }
+            if (inMes.startsWith("New_turn")) {
+                this.state=true;
+            }
             if (inMes.indexOf('%') != -1) {
                 jlNumberOfClients.setText("Человек в лобби:" + inMes.charAt(1));
                 //PlayerCount++;
 
                 this.PlayerCount=Character.getNumericValue(inMes.charAt(1));
                 System.out.println(PlayerCount);
-                allpos = new int[PlayerCount*3];
+                allpos = new int[PlayerCount*4];
             }
             if(inMes.startsWith("Clients_post")){
                 inMes = inMes.substring(12,inMes.length());
