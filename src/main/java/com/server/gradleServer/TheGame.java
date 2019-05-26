@@ -28,7 +28,7 @@ public class TheGame extends JFrame {
     private JButton up=new JButton("На Юг");
     private JButton endturn =new JButton("Конец хода");
     private JButton find = new JButton("Исследовать");
-    private JButton skill = new JButton("Проверка");
+    private JButton dream = new JButton("Отдохнуть");
     private JLabel hero=new JLabel();
     private JLabel enemy=new JLabel();
     private JFrame frame;
@@ -38,6 +38,7 @@ public class TheGame extends JFrame {
 
     private ClientUI cl;
 
+    private int my_x,my_y;
     private int thisangle = -180;
     private int thisroom = 2;
     private int c;
@@ -59,9 +60,11 @@ public class TheGame extends JFrame {
     private String figt_dam;
     private boolean secret_hod = false;
     private int gold = 0;
+    private boolean gameover=false;
+    private boolean first=  true;
 
-    public TheGame(Integer Hero, Socket fromserver,ClientUI tcl) {
-        frame = new JFrame("Game");
+    public TheGame(Integer Hero, Socket fromserver,ClientUI tcl){
+        frame  = new JFrame("Game");
         Dimension size = new Dimension(1200, 700);
         jpanel1.setLayout(new GridBagLayout());
         jpanel_minimap.setLayout(new GridBagLayout());
@@ -102,16 +105,7 @@ public class TheGame extends JFrame {
         HeroView.setLineWrap(true);
         jpanel1.add(HeroView, f);
         f.gridheight=1;
-/*
-        f.gridx = 1;
-        f.gridy = 5;
-        Herohp.setEnabled(false);
-        jpanel1.add(Herohp);
 
-        f.gridx = 1;
-        f.gridy = 5;
-        Herogold.setEnabled(false);
-        jpanel1.add(Herogold);*/
 
 /////////////////////Текстовое поле
 ///////////////////////////Кароточки на карте
@@ -175,7 +169,7 @@ public class TheGame extends JFrame {
 
         f.gridx=1;
         f.gridy=2;
-        jpanel1.add(skill,f);
+        jpanel1.add(dream,f);
 
         f.gridx=1;
         f.gridy=3;
@@ -187,6 +181,16 @@ public class TheGame extends JFrame {
         jpanel1.add(endturn,f);
 
 /////////////////////Кнопки
+///////////////////Hp и Gold///////
+        f.gridx=2;
+        f.gridy=3;
+        Herohp.setEditable(false);
+        jpanel1.add(Herohp,f);
+        f.gridx=3;
+        f.gridy=3;
+        Herogold.setEditable(false);
+        jpanel1.add(Herogold,f);
+///////////////////Hp и Gold///////
 
         try {
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\1.png"));
@@ -215,6 +219,18 @@ public class TheGame extends JFrame {
             icon = new ImageIcon(img);
             minimap[5][5].setIcon(icon);
             map[5][5]=12;
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\8.png"));
+            img = ChangeImage(img,0,25,25,0.5,0.5);
+            icon = new ImageIcon(img);
+            minimap[0][0].setIcon(icon);
+            minimap[10][10].setIcon(icon);
+            minimap[0][10].setIcon(icon);
+            minimap[10][0].setIcon(icon);
+
+            map[0][0]=8;
+            map[10][10]=8;
+            map[0][10]=8;
+            map[10][0]=8;
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
@@ -228,10 +244,18 @@ public class TheGame extends JFrame {
         } catch (IOException e) {
             System.out.println(e);
         }
-        currentallpos=cl.getallpospos();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+        dream.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HeroView.setText("Вы решили разбить лагерь и немного отдохнуть.\n Вы чувствуете себя легче.");
+                hero_helf =hero_helf+2;
+                not_Activ();
+            }
+        });
 
         find.addActionListener(new ActionListener() {
             @Override
@@ -246,17 +270,33 @@ public class TheGame extends JFrame {
         endturn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Card(0);
-                not_Activ();
-                cl.sendMsg("End_of_the_turn");
-                cl.setstate();
-                while(true){
-                    if(cl.getstate()){
-                        newturn();
+                if(gameover){
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    System.exit(0);
+                }else {
+                    Card(0);
+                    not_Activ();
+                    cl.sendMsg("End_of_the_turn");
+                    cl.setstate();
+                    while (true) {
+                        if (cl.getstate()) {
+                            newturn();
+                            System.out.println(cl.getstate());
+                            break;
+                        }
                         System.out.println(cl.getstate());
-                        break;
+
+                        int i = 0;
+                        currentallpos = cl.getallpospos();
+                        for (int k = 0; k < PlayerCount; k++) {
+                            map[currentallpos[i]][currentallpos[i + 1]] = currentallpos[i + 2];
+                            angles[currentallpos[i]][currentallpos[i + 1]] = currentallpos[i + 3];
+                            System.out.println("Отрисовал игрока = " + (i - 4) + " " + currentallpos[i] + " " + currentallpos[i + 1] + " " + currentallpos[i + 2] + " " + currentallpos[i + 3]);
+                            paintMap(currentallpos[i], currentallpos[i + 1], currentallpos[i + 2], currentallpos[i + 3]);
+                            i += 4;
+                        }
+
                     }
-                    System.out.println(cl.getstate());
                 }
             }
         });
@@ -266,6 +306,7 @@ public class TheGame extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 mynumber=cl.getmynumber();
+                System.out.println("mynumber ="+mynumber);
                   thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                   thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
@@ -273,7 +314,7 @@ public class TheGame extends JFrame {
                 System.out.println("room = "+thisroom);
                 System.out.println("angle south = "+thisangle);
                 if(key != 12 && key != 32 &&key != 42&&key != 2341 &&key != 23 &&key != 2 &&key != 21 &&key != 24&& secret_hod !=true) {
-                    HeroView.setText("Нельзя двигаться на юг");
+                    HeroView.append("Нельзя двигаться на юг\n");
                 }else
                     if (currentallpos[0 + 4 * (mynumber - 1)] - 1 >= 0) {
                         currentallpos[0 + 4 * (mynumber - 1)] -= 1;
@@ -282,7 +323,7 @@ public class TheGame extends JFrame {
                         thisroom = currentallpos[2+4*(mynumber-1)];
                         Card(1);
                     } else {
-                        HeroView.setText("Нельзя двигаться на юг");
+                        HeroView.append("Нельзя двигаться на юг\n");
                     }
 
 
@@ -292,6 +333,7 @@ public class TheGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mynumber=cl.getmynumber();
+                System.out.println("mynumber ="+mynumber);
                 thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                 thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
@@ -299,7 +341,7 @@ public class TheGame extends JFrame {
                 System.out.println("room = "+thisroom);
                 System.out.println("angle sever = "+thisangle);
                 if(key != 21 && key != 31 && key != 41&&key != 2341 &&key != 13 &&key != 1 &&key != 12 &&key != 14 && secret_hod !=true){
-                    HeroView.setText("Нельзя двигаться на север");
+                    HeroView.append("Нельзя двигаться на север\n");
                 }else
                 if (currentallpos[0+4*(mynumber-1)]+1<map.length){
                     currentallpos[0+4*(mynumber-1)]+=1;
@@ -309,7 +351,7 @@ public class TheGame extends JFrame {
                     Card(1);
             }
                 else{
-                HeroView.setText("Нельзя двигаться на север");
+                HeroView.append("Нельзя двигаться на север\n");
             }
             }
         });
@@ -317,6 +359,7 @@ public class TheGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mynumber=cl.getmynumber();
+                System.out.println("mynumber ="+mynumber);
                 thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                 thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
@@ -324,7 +367,7 @@ public class TheGame extends JFrame {
                 System.out.println("room = "+thisroom);
                 System.out.println("angle west = "+thisangle);
                 if(key != 43 && key != 23 &&key != 13&&key != 2341 &&key != 31 &&key != 3 &&key != 32 &&key != 34&& secret_hod !=true){
-                    HeroView.setText("Нельзя двигаться на запад");
+                    HeroView.append("Нельзя двигаться на запад\n");
                 }else
                 if(currentallpos[1+4*(mynumber-1)]-1>=0) {
                     currentallpos[1+4*(mynumber-1)]-=1;
@@ -334,7 +377,7 @@ public class TheGame extends JFrame {
                     Card(1);
                 }
                 else{
-                    HeroView.setText("Нельзя двигаться на запад");
+                    HeroView.append("Нельзя двигаться на запад\n");
                 }
             }
         });
@@ -342,6 +385,7 @@ public class TheGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                         mynumber=cl.getmynumber();
+                System.out.println("mynumber ="+mynumber);
                 thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                 thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
@@ -349,7 +393,7 @@ public class TheGame extends JFrame {
                 System.out.println("room = "+thisroom);
                 System.out.println("angle east = "+thisangle);
                 if(key != 34 && key != 24 &&key != 14 &&key != 2341&&key != 43 &&key != 4 &&key != 42 &&key != 41&& secret_hod !=true){
-                    HeroView.setText("Нельзя двигаться на восток");
+                    HeroView.append("Нельзя двигаться на восток\n");
                 }else
                         if(currentallpos[1+4*(mynumber-1)]+1<map.length) {
                             currentallpos[1+4*(mynumber-1)]+= 1;
@@ -359,7 +403,7 @@ public class TheGame extends JFrame {
                             Card(1);
                         }
                         else{
-                            HeroView.setText("Нельзя двигаться на восток");
+                            HeroView.append("Нельзя двигаться на восток\n");
                         }
             }
         });
@@ -370,6 +414,16 @@ public class TheGame extends JFrame {
                 cl.close();
             }
         });
+
+
+if(first) {
+    currentallpos = cl.getallpospos();
+    mynumber = cl.getmynumber();
+    System.out.println("Мой номер ="+mynumber);
+    my_x = currentallpos[0 + 4 * (mynumber )];
+    my_y = currentallpos[1 + 4 * (mynumber )];
+    first = false;
+}
 
     }
     public void paintMap(Integer i,Integer j,Integer k,int angle){
@@ -390,15 +444,18 @@ public class TheGame extends JFrame {
 
 
     public void paint(int angle){
+        test_game_win();
         secret_hod = false;
         String temp="";
         int a= 2 + (int) ( Math.random() * roomcount-1);
         cl.getallpospos();
+        System.out.print("angle? = "+currentallpos[3]+" "+(3+4*(mynumber-1)));
         if (map[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]]==0 && map[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]]!=roomcount+1) {
             map[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]] = a;
             currentallpos[2+4*(mynumber-1)]=a;
             angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]]=angle;
-            msg="Client_posit"+currentallpos[0+4*(mynumber-1)]+"@"+currentallpos[1+4*(mynumber-1)]+"@"+currentallpos[2+4*(mynumber-1)]+"@"+angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
+           // msg="Client_posit"+currentallpos[0+4*(mynumber-1)]+"@"+currentallpos[1+4*(mynumber-1)]+"@"+currentallpos[2+4*(mynumber-1)]+"@"+angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
+            msg="Client_posit"+currentallpos[0+4*(mynumber-1)]+"@"+currentallpos[1+4*(mynumber-1)]+"@"+currentallpos[2+4*(mynumber-1)]+"@"+angle;
             paintMap(currentallpos[0+4*(mynumber-1)],currentallpos[1+4*(mynumber-1)],currentallpos[2+4*(mynumber-1)],angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]]);
         }
         else{
@@ -406,21 +463,10 @@ public class TheGame extends JFrame {
             msg="Client_posit"+currentallpos[0+4*(mynumber-1)]+"@"+currentallpos[1+4*(mynumber-1)]+"@"+currentallpos[2+4*(mynumber-1)]+"@"+angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
         }
 
-        /////////////////////////////////Проверка комнаты
 
-        /////////////////////////////////Проверка комнаты
-        int i=0;
-        System.out.print("\n");
-        System.out.println(PlayerCount);
-        for(int k=0;k<PlayerCount;k++){
-            map[currentallpos[i]][currentallpos[i+1]] = currentallpos[i+2];
-            System.out.println(currentallpos[i]+" "+currentallpos[i+1]+" "+ currentallpos[i+2]);
-            paintMap(currentallpos[i],currentallpos[i+1],currentallpos[i+2],angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]]);
-            i+=4;
-        }
         System.out.print("\n");
         System.out.print("\n");
-        for(i=0;i<11;i++){
+        for(int i=0;i<11;i++){
             for(int j=0;j<11;j++){
                 System.out.print(map[i][j]);
             }
@@ -487,107 +533,127 @@ public class TheGame extends JFrame {
 ///////////////1-только север и юг /2-только запад и юг/3-только восток и юг/4-запад и север и юг
 // /////////////5-на восток и север/0-тупик и назад
     public int test_room(int angle){
+  /////////////////////////////////////////////////////////////////
+        int dmg =0;
         if(thisroom == 3){
-            skillchec(2);
+            dmg =skillchec(2);
+            if(dmg>0){
+                HeroView.append("ПРОВАЛ: Не удержав равновесие вы падаете в глубокую пропасть. Придется потратить время чтоб выбратся. Вы получили "+dmg+" урона\n");
+                not_Activ();}
+            else{}
+
         }
         if(thisroom == 4){
-            skillchec(2);
+            dmg =skillchec(2);
+            if(dmg>0){
+                HeroView.append("ПРОВАЛ: При попытке пролезть через щель меж камней вас придавило. Вы получили "+dmg+" урона\n");
+                not_Activ();}
+            else{}
+
         }
         if(thisroom == 5){
             gold = gold+5;
         }
+        if(thisroom == 12){
+            gold = gold+100;
+        }
         if(thisroom == 10){
-            skillchec(1);
-        }
+            dmg =skillchec(1);
+            if(dmg>0){
+                HeroView.append("ПРОВАЛ: В попытках разорвать паутину вы разозлили живущего там паука. Вы получили "+dmg+" урона\n");
+                not_Activ();}
+            else{}
 
+        }
+//////////////////////////////////////////////////////////////////////
         update_hp_gold();
+        if(dmg==0) {
+            if (angle == 90) {
+                if (thisroom == 2 || thisroom == 3 || thisroom == 4 || thisroom == 12) {
+                    return 34;
+                }
+                if (thisroom == 6 || thisroom == 9) {
+                    return 31;
+                }
+                if (thisroom == 7) {
+                    return 32;
+                }
+                if (thisroom == 8 || thisroom == 10) {
+                    return 2341;
+                }
+                if (thisroom == 5) {
+                    return 3;
+                }
+                if (thisroom == 11) {
+                    return 4;
+                }
+            }
 
-        if(angle == 90){
-            if(thisroom == 2 || thisroom == 3 ||thisroom == 4 ||thisroom == 12){
-                return 34;
+            if (angle == -180) {
+                if (thisroom == 2 || thisroom == 3 || thisroom == 4 || thisroom == 12) {
+                    return 21;
+                }
+                if (thisroom == 6 || thisroom == 9) {
+                    return 23;
+                }
+                if (thisroom == 7) {
+                    return 24;
+                }
+                if (thisroom == 8 || thisroom == 10) {
+                    return 2341;
+                }
+                if (thisroom == 5) {
+                    return 2;
+                }
+                if (thisroom == 11) {
+                    return 1;
+                }
             }
-            if(thisroom == 6 || thisroom == 9){
-                return 31;
+            if (angle == -90) {
+                if (thisroom == 2 || thisroom == 3 || thisroom == 4 || thisroom == 12) {
+                    return 43;
+                }
+                if (thisroom == 6 || thisroom == 9) {
+                    return 42;
+                }
+                if (thisroom == 7) {
+                    return 41;
+                }
+                if (thisroom == 8 || thisroom == 10) {
+                    return 2341;
+                }
+                if (thisroom == 5) {
+                    return 4;
+                }
+                if (thisroom == 11) {
+                    return 3;
+                }
             }
-            if(thisroom == 7){
-                return 32;
+            if (angle == 0) {
+                if (thisroom == 2 || thisroom == 3 || thisroom == 4 || thisroom == 12) {
+                    return 12;
+                }
+                if (thisroom == 6 || thisroom == 9) {
+                    return 14;
+                }
+                if (thisroom == 7) {
+                    return 13;
+                }
+                if (thisroom == 8 || thisroom == 10) {
+                    return 2341;
+                }
+                if (thisroom == 5) {
+                    return 1;
+                }
+                if (thisroom == 11) {
+                    return 2;
+                }
             }
-            if(thisroom == 8 || thisroom == 10){
+            if (thisroom == 0) {
                 return 2341;
             }
-            if(thisroom == 5){
-                return 3;
-            }
-            if(thisroom == 11){
-                return 4;
-            }
-        }
 
-        if(angle == -180){
-            if(thisroom == 2 || thisroom == 3 ||thisroom == 4 ||thisroom == 12){
-                return 21;
-            }
-            if(thisroom == 6 || thisroom == 9){
-                return 23;
-            }
-            if(thisroom == 7){
-                return 24;
-            }
-            if(thisroom == 8 || thisroom == 10){
-                return 2341;
-            }
-            if(thisroom == 5){
-                return 2;
-            }
-            if(thisroom == 11){
-                return 1;
-            }
         }
-        if(angle == -90){
-            if(thisroom == 2 || thisroom == 3 ||thisroom == 4 ||thisroom == 12){
-                return 43;
-            }
-            if(thisroom == 6 || thisroom == 9){
-                return 42;
-            }
-            if(thisroom == 7){
-                return 41;
-            }
-            if(thisroom == 8 || thisroom == 10){
-                return 2341;
-            }
-            if(thisroom == 5){
-                return 4;
-            }
-            if(thisroom == 11){
-                return 3;
-            }
-        }
-        if(angle == 0){
-            if(thisroom == 2 || thisroom == 3 ||thisroom == 4 ||thisroom == 12){
-                return 12;
-            }
-            if(thisroom == 6 || thisroom == 9){
-                return 14;
-            }
-            if(thisroom == 7){
-                return 13;
-            }
-            if(thisroom == 8 || thisroom == 10){
-                return 2341;
-            }
-            if(thisroom == 5){
-                return 1;
-            }
-            if(thisroom == 11){
-                return 2;
-            }
-        }
-        if(thisroom == 0){
-            return 2341;
-        }
-
-
             return 0;
     }
 
@@ -608,7 +674,7 @@ public class TheGame extends JFrame {
                             break;
                         }
                         case 1: {
-                            HeroView.append("Огромное, ядовитое, членистоногое существо напало вас!\n Пройдите проверку на защиту\n");
+                            HeroView.append("Огромное, ядовитое, членистоногое существо напало на вас!\n Пройдите проверку на защиту\n");
                             dmg =skillchec(3);
                             if(dmg>0){
                                 HeroView.append("ПРОВАЛ: Похоже тряпки, которые вы нацепили на себя и назвали 'Броней' не так хорошо защищают от укусов паука. Вы получили "+dmg+" урона\n");}
@@ -616,7 +682,7 @@ public class TheGame extends JFrame {
                             break;
                         }
                         case 2: {
-                            HeroView.append("Скелеты!\n Когда-то, бывшие охотниками за сокровищями. Пристольно смотрят на вас требуют пароль\n Пройдите проверку на удачу\n");
+                            HeroView.append("Скелеты!\n Когда-то, бывшие охотниками за сокровищями. Пристально смотрят на вас требуют пароль\n Пройдите проверку на удачу\n");
                             dmg =skillchec(4);
                             if(dmg>0){
                                 HeroView.append("ПРОВАЛ: Фраза 'Пропустите меня' явно не устроила скелетов, они выхватили мечи и набросились на вас. Вы получили "+dmg+" урона\n");}
@@ -688,7 +754,7 @@ public class TheGame extends JFrame {
         down.setEnabled(true);
         left.setEnabled(true);
         right.setEnabled(true);
-        skill.setEnabled(true);
+        dream.setEnabled(true);
       //  endturn.setEnabled(true);
         endturn.setEnabled(false);
      //   paint(currentallpos[2+4*(mynumber-1)]);
@@ -700,7 +766,7 @@ public class TheGame extends JFrame {
         down.setEnabled(false);
         left.setEnabled(false);
         right.setEnabled(false);
-        skill.setEnabled(false);
+        dream.setEnabled(false);
         endturn.setEnabled(true);
     }
 
@@ -844,7 +910,7 @@ public class TheGame extends JFrame {
        switch(stat){
            case 1:{
                 if(stats[0] < a){
-                    hero_helf = hero_helf - a - stats[0];
+                    hero_helf = hero_helf - (a - stats[0]);
                     return a - stats[0];
                 }
                 else
@@ -854,7 +920,7 @@ public class TheGame extends JFrame {
            }
            case 2:{
                if(stats[1] < a){
-                   hero_helf = hero_helf - a - stats[1];
+                   hero_helf = hero_helf - (a - stats[1]);
                    return a - stats[1];
                }
                else
@@ -864,7 +930,7 @@ public class TheGame extends JFrame {
            }
            case 3:{
                if(stats[2] < a){
-                   hero_helf = hero_helf - a - stats[2];
+                   hero_helf = hero_helf - (a - stats[2]);
                    return a - stats[2];
                }
                else
@@ -874,7 +940,7 @@ public class TheGame extends JFrame {
            }
            case 4:{
                if(stats[3] < a){
-                   hero_helf = hero_helf - a - stats[3];
+                   hero_helf = hero_helf - (a - stats[3]);
                    return a - stats[3];
                }
                else
@@ -968,7 +1034,7 @@ public class TheGame extends JFrame {
                     HeroView.append("ПРОВАЛ: Вам не удалось избежать ловушки. Вы получили "+dmg+"урона\n");
                 }
                 else
-                    HeroView.append("УСПЕХ: Со свистом из пола выдвинулось 1000 кольев, но вот удача именно в том месте где вы стояли, один кол был сломан.\n");
+                    HeroView.append("УСПЕХ: Со свистом из пола выдвинулось 1000 кольев, но вот удача, именно в том месте где вы стояли, один кол был сломан.\n");
                 break;
             }
         }
@@ -976,8 +1042,63 @@ public class TheGame extends JFrame {
     }
 
     private void update_hp_gold(){
-        Herohp.setText(""+hero_helf+"");
-        Herogold.setText(""+gold+"");
+        if(hero_helf>20){
+            hero_helf = 20;
+        }
+        if(hero_helf<1){HeroView.setText("Подземелья поглотили вас. О вас никогда никто не вспомнит.\n Ваша участь предраспределенна.\n Вы собрали "+gold+" Золота\n");
+            cl.sendMsg("End_of_the_turn");
+        cl.sendMsg("##session##end##");
+            endturn.setText("Конец Игры");
+            gameover = true;
+        }
+        else {
+            Color col = new Color(255, 185, 0);
+            Herohp.setBackground(col);
+            Herogold.setBackground(col);
+            Herohp.setFont(new Font("Dialog", Font.PLAIN, 20));
+            Herogold.setFont(new Font("Dialog", Font.PLAIN, 20));
+            Herohp.setText("ХП " + hero_helf + "");
+            Herogold.setText("$" + gold + "");
+        }
     }
 
+    private void test_game_win(){
+        int ok = 0;
+        currentallpos = cl.getallpospos();
+        if(currentallpos[0+4*(mynumber-1)]!=my_x && currentallpos[1+4*(mynumber-1)]!=my_y){
+            if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==10){
+                 ok =JOptionPane.showConfirmDialog(
+                        this,
+                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Выжил"+enemy,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+            }
+            if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==10){
+                ok =JOptionPane.showConfirmDialog(
+                        this,
+                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Выжил"+enemy,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+            }
+            if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==0){
+                ok =JOptionPane.showConfirmDialog(
+                        this,
+                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Выжил"+enemy,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+            }
+            if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==0){
+                ok =JOptionPane.showConfirmDialog(
+                        this,
+                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Выжил"+enemy,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+            }
+            if(ok == JOptionPane.DEFAULT_OPTION){
+            cl.sendMsg("End_of_the_turn");
+            cl.sendMsg("##session##end##");
+            gameover = true;}
+
+        }
+    }
 }

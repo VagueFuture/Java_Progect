@@ -36,6 +36,7 @@ public class ServerSocked {
                 MyThread client = new MyThread(Client, this);
                 serverList.add(client);
                 System.out.println("Client connected");
+
                 new Thread(client).start();
             }
             } catch (IOException e) {
@@ -103,7 +104,7 @@ public class ServerSocked {
             String str = "Clients_post";
             for (MyThread o : serverList) {
                 o.setAmIn(x[j], y[j]);
-                str += o.getAmInX() + "@" + o.getAmInY() + "@" + 0+"@";
+                str += x[j] + "@" + y[j] + "@" + 0+"@"+ 0+"@";
                 j++;
             }
             sendMessageToAllClients(str);
