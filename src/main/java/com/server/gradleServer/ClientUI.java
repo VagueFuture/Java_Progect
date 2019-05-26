@@ -126,6 +126,7 @@ public class ClientUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     sendMsg(PlayerStatusReady);
                     button2.setEnabled(false);
+
                 }
             });
     }
@@ -155,9 +156,9 @@ public class ClientUI extends JFrame{
                 String inMes = in.next();
             if(inMes.startsWith("Client_numbr")){
                 inMes = inMes.substring(12,inMes.length());
-                String[] subStr;
-                subStr = inMes.split("@");
-                this.mynumber=Integer.valueOf(subStr[0]);
+              //  String[] subStr;
+               // subStr = inMes.split("@");
+                this.mynumber=Integer.valueOf(inMes);
                 //System.out.println("mynumber "+mynumber);
             }
             if(inMes.startsWith("Start_Game")){
@@ -192,10 +193,11 @@ public class ClientUI extends JFrame{
                 //System.out.println("Poluchil clientui");
                 //System.out.println(PlayerCount);
                 //System.out.println("mas client ui"+allpos.length);
+                System.out.println("Get Client Post");
                 for(int i=0;i<subStr.length;i++){
                     allpos[i]=Integer.valueOf(subStr[i]);
-                    //System.out.println(subStr[i]);
-                    //System.out.println(allpos[i]);
+                    System.out.println("substr ="+subStr[i]);
+                    System.out.println("allpos ="+allpos[i]+" "+i);
                 }
                 this.allpos=allpos;
             }
