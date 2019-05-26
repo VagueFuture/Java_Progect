@@ -164,6 +164,9 @@ public class ClientUI extends JFrame{
                 //System.out.println("mynumber "+mynumber);
             }
             if(inMes.startsWith("Start_Game")){
+                if(nickname.getText().equals("STALKER")) {
+                    ChosenHero=4;
+                }
                 Game.main(null,ChosenHero,fromserver,this);
                 frame.setVisible(false);
             }

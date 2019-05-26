@@ -1,4 +1,4 @@
-package com.server.gradleServer.chatController;
+/*package com.server.gradleServer.chatController;
 
 import com.server.gradleServer.domain.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -22,4 +22,4 @@ public class ChatController {
         headerAccessor.getSessionAttributes().put("username", message.getFrom());
         return message;
     }
-}
+}*/

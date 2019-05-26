@@ -252,7 +252,7 @@ public class TheGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 HeroView.setText("Вы решили развести костер и немного отдохнуть. Успокаивающие потрескивание костра оказывает на вас исцеляющий эффект. Немного отдохнув вы продолжаете свой путь...\n");
-                hero_helf =hero_helf+2;
+                hero_helf =hero_helf+(int)( Math.random() * 5)+1;
                 not_Activ();
             }
         });
@@ -716,7 +716,7 @@ if(first) {
                             break;
                         }
                         case 7: {
-                            HeroView.append("Только вам решили, что перед вами свежий труп, как он встал и побрел на вас. Предстоит сражение с Зомби\n Сражайтесь!\n");
+                            HeroView.append("Только вам решили, что перед вами свежий труп, как он встал и побрел на вас. Предстоит сражение с Зомби\nСражайтесь!\n");
                             enemy_helf = 2;
                             fight("Зомби ХП=");
                             break;
@@ -987,6 +987,14 @@ if(first) {
                 stats[3] = 4;
                 break;
             }
+            case 4:{
+                stats[0] = 9;
+                stats[1] = 9;
+                stats[2] = 9;
+                stats[3] = 9;
+                hero_helf=40;
+                break;
+            }
         }
 
     }
@@ -1070,28 +1078,28 @@ if(first) {
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==10){
                  ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==10){
                 ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }

@@ -1,4 +1,4 @@
-package com.server.gradleServer.webSocket;
+/*package com.server.gradleServer.webSocket;
 
 import org.springframework.stereotype.Component;
 import com.server.gradleServer.domain.Message;
@@ -36,4 +36,4 @@ public class WebSocketEventListener {
             messagingTemplate.convertAndSend("/app/public", chatMessage);
         }
     }
-}
+}*/

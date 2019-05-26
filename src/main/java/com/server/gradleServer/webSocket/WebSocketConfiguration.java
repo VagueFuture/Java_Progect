@@ -1,4 +1,4 @@
-package com.server.gradleServer.webSocket;
+/*package com.server.gradleServer.webSocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -18,4 +18,4 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.addEndpoint("chat-messaging").withSockJS();
     }
 
-}
+}*/
