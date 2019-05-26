@@ -318,6 +318,7 @@ public class TheGame extends JFrame {
                 }else
                     if (currentallpos[0 + 4 * (mynumber - 1)] - 1 >= 0) {
                         currentallpos[0 + 4 * (mynumber - 1)] -= 1;
+                        test_game_win();
                         paint(0);
                         not_Activ();
                         thisroom = currentallpos[2+4*(mynumber-1)];
@@ -345,7 +346,8 @@ public class TheGame extends JFrame {
                 }else
                 if (currentallpos[0+4*(mynumber-1)]+1<map.length){
                     currentallpos[0+4*(mynumber-1)]+=1;
-                paint(-180);
+                    test_game_win();
+                    paint(-180);
                     not_Activ();
                     thisroom = currentallpos[2+4*(mynumber-1)];
                     Card(1);
@@ -371,6 +373,7 @@ public class TheGame extends JFrame {
                 }else
                 if(currentallpos[1+4*(mynumber-1)]-1>=0) {
                     currentallpos[1+4*(mynumber-1)]-=1;
+                    test_game_win();
                     paint(-90);
                     not_Activ();
                     thisroom = currentallpos[2+4*(mynumber-1)];
@@ -397,6 +400,7 @@ public class TheGame extends JFrame {
                 }else
                         if(currentallpos[1+4*(mynumber-1)]+1<map.length) {
                             currentallpos[1+4*(mynumber-1)]+= 1;
+                            test_game_win();
                             paint(90);
                             not_Activ();
                             thisroom = currentallpos[2+4*(mynumber-1)];
@@ -444,7 +448,6 @@ if(first) {
 
 
     public void paint(int angle){
-        test_game_win();
         secret_hod = false;
         String temp="";
         int a= 2 + (int) ( Math.random() * roomcount-1);
@@ -1071,43 +1074,53 @@ if(first) {
         }
     }
 
-    private void test_game_win(){
-        int ok = 0;
+    private int test_game_win(){
+        int ok=9999999;
+        System.out.println("myx= "+my_x+"myy= "+my_y);
+        UIManager.put("OptionPane.yesButtonText"   , "Сбежать из подземелья"    );
+        UIManager.put("OptionPane.noButtonText"    , "Остаться из подземелья"   );
         currentallpos = cl.getallpospos();
-        if(currentallpos[0+4*(mynumber-1)]!=my_x && currentallpos[1+4*(mynumber-1)]!=my_y){
+        //if(currentallpos[1+4*(mynumber-1)]!=my_x && currentallpos[0+4*(mynumber-1)]!=my_y){
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==10){
                  ok =JOptionPane.showConfirmDialog(
                         this,
                         "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==10){
                 ok =JOptionPane.showConfirmDialog(
                         this,
                         "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
                         "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
                         "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
-            if(ok == JOptionPane.DEFAULT_OPTION){
-            cl.sendMsg("End_of_the_turn");
+            if(ok == JOptionPane.YES_OPTION){
+            //cl.sendMsg("End_of_the_turn");
             cl.sendMsg("##session##end##");
-            gameover = true;}
-
-        }
+            gameover = true;
+            cl.close();
+            return 1;
+            }
+            else{
+                cl.sendMsg("End_of_the_turn");
+                return 1;
+                //gameover = true;
+            }
+       // }
     }
 }
