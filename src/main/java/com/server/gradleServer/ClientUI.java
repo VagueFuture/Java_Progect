@@ -106,7 +106,9 @@ public class ClientUI extends JFrame{
                         while (true) {
                             getdMsg();
                         }
+
                     } catch (Exception e) {
+
                         e.printStackTrace();
                         System.out.println(e);
 
@@ -135,8 +137,8 @@ public class ClientUI extends JFrame{
         try {
             // отправляем служебное сообщение, которое является признаком того, что клиент вышел из лобби
             sendMsg("##session##end##");
-            out.close();
-            in.close();
+            //out.close();
+            //in.close();
             fromserver.close();
         } catch (IOException exc) {
 
