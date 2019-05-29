@@ -64,12 +64,12 @@ public class TheGame extends JFrame {
     private int gold = 0;
     private boolean gameover=false;
     private boolean first=  true;
-    private int day_count = 24;
+    private int day_count = 40;
     private boolean movement =  true;
 
     public TheGame(Integer Hero, Socket fromserver,ClientUI tcl){
         frame  = new JFrame("Game");
-        Dimension size = new Dimension(1920, 1080);
+        Dimension size = new Dimension(1565, 863);
         jpanel1.setLayout(new GridBagLayout());
         jpanel_minimap.setLayout(new GridBagLayout());
         GridBagConstraints f = new GridBagConstraints();
@@ -198,17 +198,19 @@ public class TheGame extends JFrame {
 
         f.gridx=2;
         f.gridy=2;
-        f.gridheight = 4;
-        f.gridwidth = 4;
+       // f.gridheight = 4;
+
         day.setEditable(false);
         jpanel1.add(day,f);
 ///////////////////Hp и Gold и day///////
 //////////////////compas////////
         f.gridx = 3;
         f.gridy = 1;
+        f.gridwidth = 4;
+        f.gridheight = 1;
         f.gridheight=4;
         jpanel1.add(compas, f);
-        f.gridheight = 1;
+        //f.gridheight = 1;
         f.gridwidth = 1;
 //////////////////compas////////
         try {
@@ -767,7 +769,7 @@ if(first) {
                         case 9:{
                             int g=20 + (int) (Math.random() * 100);
                             gold+=g;
-                            HeroView.append("Вы нашли на полу мешочек с золотом, похоже, что кто-то обронил в спешке и не заметил.+\n "+g);
+                            HeroView.append("Вы нашли на полу мешочек с золотом, похоже, что кто-то обронил в спешке и не заметил.+ "+g+"\n");
                         }
                         case 10: {
                             break;
@@ -1114,7 +1116,7 @@ if(first) {
             day.setFont(new Font("Dialog", Font.PLAIN, 20));
             Herohp.setText("ХП " + hero_helf + "");
             Herogold.setText("$" + gold + "");
-            day.setText("Осталось часов: "+day_count+" /24");
+            day.setText("Время: "+day_count+" /40");
         }
     }
 
