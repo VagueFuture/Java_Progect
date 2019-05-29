@@ -20,16 +20,17 @@ public class MyThread implements Runnable {
     private int angle;
     private boolean turn;
     private boolean ready;
-    private static final String HOST = "25.44.20.209";//25.44.20.209
+    private static String HOST;
     private static final int PORT = 2620;
     Socket Client = null;
     private static int clients_count = 0;
 
-    public MyThread(Socket socket, ServerSocked server) {
+    public MyThread(Socket socket, ServerSocked server, String[] ip) {
         try {
             clients_count++;
             this.server = server;
             this.Client = socket;
+            HOST= ip[0];//25.44.20.209
             this.outMessage = new PrintWriter(socket.getOutputStream());
             this.inMessage = new Scanner(socket.getInputStream());
         } catch (IOException ex) {

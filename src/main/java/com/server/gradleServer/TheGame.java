@@ -251,8 +251,10 @@ public class TheGame extends JFrame {
         dream.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                HeroView.setText("Вы решили развести костер и немного отдохнуть. Успокаивающие потрескивание костра оказывает на вас исцеляющий эффект. Немного отдохнув вы продолжаете свой путь...\n");
-                hero_helf =hero_helf+(int)( Math.random() * 5)+1;
+                int othil;
+                othil=(int)( Math.random() * 5)+1;
+                hero_helf =hero_helf+othil;
+                HeroView.setText("Вы решили развести костер и немного отдохнуть. Успокаивающие потрескивание костра оказывает на вас исцеляющий эффект(+"+othil+"). Немного отдохнув вы продолжаете свой путь...\n");
                 not_Activ();
             }
         });
@@ -665,7 +667,7 @@ if(first) {
         try {
             if(key == 1) {
                 if(thisroom != 3 && thisroom != 4 && thisroom != 10 && thisroom != 12) {
-                    int a = 0 + (int) (Math.random() * 9);
+                    int a = 0 + (int) (Math.random() * 10);
 
                     img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Events\\" + a + ".png"));
                     img = ChangeImage(img, 0, 177, 250, 1, 1);
@@ -729,7 +731,11 @@ if(first) {
                             secret_hod = true;
                             break;
                         }
-                        case 9: {
+                        case 9:{
+                            HeroView.append("Вы нашли на полу мешочек с золотом, похоже, что кто-то обронил в спешке и не заметил.\n ");
+                            gold+=20 + (int) (Math.random() * 100);
+                        }
+                        case 10: {
                             break;
                         }
                     }
@@ -1078,7 +1084,7 @@ if(first) {
         int ok=9999999;
         System.out.println("myx= "+my_x+"myy= "+my_y);
         UIManager.put("OptionPane.yesButtonText"   , "Сбежать из подземелья"    );
-        UIManager.put("OptionPane.noButtonText"    , "Остаться из подземелья"   );
+        UIManager.put("OptionPane.noButtonText"    , "Остаться в подземелье"   );
         currentallpos = cl.getallpospos();
         //if(currentallpos[1+4*(mynumber-1)]!=my_x && currentallpos[0+4*(mynumber-1)]!=my_y){
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==10){
