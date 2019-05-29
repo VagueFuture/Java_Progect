@@ -57,11 +57,11 @@ public class ClientUI extends JFrame{
         return this.PlayerCount;
     }
 
-    public ClientUI() {
+    public ClientUI(String[] ip) {
             fromserver = null;
             DefaultListModel dlm = new DefaultListModel();
             try {
-                fromserver = new Socket("25.44.20.209", 2620);//25.44.20.209
+                fromserver = new Socket(ip[0], Integer.valueOf(ip[1]));//25.44.20.209
                 in = new Scanner(fromserver.getInputStream());
                 out = new PrintWriter(fromserver.getOutputStream(), true);
             } catch (IOException e) {
@@ -164,6 +164,9 @@ public class ClientUI extends JFrame{
                 //System.out.println("mynumber "+mynumber);
             }
             if(inMes.startsWith("Start_Game")){
+                if(nickname.getText().equals("STALKER")) {
+                    ChosenHero=4;
+                }
                 Game.main(null,ChosenHero,fromserver,this);
                 frame.setVisible(false);
             }

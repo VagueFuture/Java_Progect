@@ -13,14 +13,15 @@ public class ServerSocked {
     public static ArrayList<MyThread> serverList = new ArrayList<>();
 
 
-    public ServerSocked() {
+    public ServerSocked(String[] ip) {
 
         ServerSocket servers = null;
 
         Socket Client = null;
 
         try {
-            servers = new ServerSocket(2620);
+            //port p;
+            servers = new ServerSocket(Integer.valueOf(ip[1]));
         } catch (IOException e) {
             System.out.println("Couldn't listen to port 2620");
             System.exit(-1);
@@ -33,7 +34,7 @@ public class ServerSocked {
                 System.out.print("Waiting for a client...");
                 Client = servers.accept();
                 //serverList.add(new MyThread(Client));
-                MyThread client = new MyThread(Client, this);
+                MyThread client = new MyThread(Client, this,ip);
                 serverList.add(client);
                 System.out.println("Client connected");
 

@@ -64,7 +64,7 @@ public class TheGame extends JFrame {
     private int gold = 0;
     private boolean gameover=false;
     private boolean first=  true;
-    private int day_count = 22;
+    private int day_count = 24;
 
     public TheGame(Integer Hero, Socket fromserver,ClientUI tcl){
         frame  = new JFrame("Game");
@@ -249,6 +249,7 @@ public class TheGame extends JFrame {
             img = ChangeImage(img,0,150,150,0.5,0.5);
             icon = new ImageIcon(img);
             compas.setIcon(icon);
+            update_hp_gold();
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
@@ -269,8 +270,10 @@ public class TheGame extends JFrame {
         dream.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                HeroView.setText("Вы решили развести костер и немного отдохнуть. Успокаивающие потрескивание костра оказывает на вас исцеляющий эффект. Немного отдохнув вы продолжаете свой путь...\n");
-                hero_helf =hero_helf+2;
+                int othil;
+                othil=(int)( Math.random() * 5)+1;
+                hero_helf =hero_helf+othil;
+                HeroView.setText("Вы решили развести костер и немного отдохнуть. Успокаивающие потрескивание костра оказывает на вас исцеляющий эффект(+"+othil+"). Немного отдохнув вы продолжаете свой путь...\n");
                 not_Activ();
             }
         });
@@ -336,6 +339,7 @@ public class TheGame extends JFrame {
                 }else
                     if (currentallpos[0 + 4 * (mynumber - 1)] - 1 >= 0) {
                         currentallpos[0 + 4 * (mynumber - 1)] -= 1;
+                        test_game_win();
                         paint(0);
                         not_Activ();
                         thisroom = currentallpos[2+4*(mynumber-1)];
@@ -363,7 +367,8 @@ public class TheGame extends JFrame {
                 }else
                 if (currentallpos[0+4*(mynumber-1)]+1<map.length){
                     currentallpos[0+4*(mynumber-1)]+=1;
-                paint(-180);
+                    test_game_win();
+                    paint(-180);
                     not_Activ();
                     thisroom = currentallpos[2+4*(mynumber-1)];
                     Card(1);
@@ -389,6 +394,7 @@ public class TheGame extends JFrame {
                 }else
                 if(currentallpos[1+4*(mynumber-1)]-1>=0) {
                     currentallpos[1+4*(mynumber-1)]-=1;
+                    test_game_win();
                     paint(-90);
                     not_Activ();
                     thisroom = currentallpos[2+4*(mynumber-1)];
@@ -415,6 +421,7 @@ public class TheGame extends JFrame {
                 }else
                         if(currentallpos[1+4*(mynumber-1)]+1<map.length) {
                             currentallpos[1+4*(mynumber-1)]+= 1;
+                            test_game_win();
                             paint(90);
                             not_Activ();
                             thisroom = currentallpos[2+4*(mynumber-1)];
@@ -462,7 +469,6 @@ if(first) {
 
 
     public void paint(int angle){
-        test_game_win();
         secret_hod = false;
         String temp="";
         int a= 2 + (int) ( Math.random() * roomcount-1);
@@ -734,7 +740,7 @@ if(first) {
                             break;
                         }
                         case 7: {
-                            HeroView.append("Только вам решили, что перед вами свежий труп, как он встал и побрел на вас. Предстоит сражение с Зомби\n Сражайтесь!\n");
+                            HeroView.append("Только вам решили, что перед вами свежий труп, как он встал и побрел на вас. Предстоит сражение с Зомби\nСражайтесь!\n");
                             enemy_helf = 2;
                             fight("Зомби ХП=");
                             break;
@@ -768,7 +774,7 @@ if(first) {
     }
 
     private void newturn(){
-        day_count++;
+        day_count--;
         find.setEnabled(true);
         up.setEnabled(true);
         down.setEnabled(true);
@@ -1006,6 +1012,14 @@ if(first) {
                 stats[3] = 4;
                 break;
             }
+            case 4:{
+                stats[0] = 9;
+                stats[1] = 9;
+                stats[2] = 9;
+                stats[3] = 9;
+                hero_helf=40;
+                break;
+            }
         }
 
     }
@@ -1065,7 +1079,7 @@ if(first) {
         if(hero_helf>20){
             hero_helf = 20;
         }
-        if(hero_helf<1 || day_count>24){HeroView.setText("Подземелья поглотили вас. Тьма посмертия — всё, что ждёт вас в будущем. Может быть, загробный мир будет более дружелюбным к вам…\nВы собрали "+gold+" Золота\n");
+        if(hero_helf<1 || day_count<=0){HeroView.setText("Подземелья поглотили вас. Тьма посмертия — всё, что ждёт вас в будущем. Может быть, загробный мир будет более дружелюбным к вам…\nВы собрали "+gold+" Золота\n");
             cl.sendMsg("End_of_the_turn");
         cl.sendMsg("##session##end##");
             endturn.setText("Конец Игры");
@@ -1081,47 +1095,57 @@ if(first) {
             day.setFont(new Font("Dialog", Font.PLAIN, 20));
             Herohp.setText("ХП " + hero_helf + "");
             Herogold.setText("$" + gold + "");
-            day.setText("День "+day_count+"/24");
+            day.setText("Осталось часов: "+day_count+" /24");
         }
     }
 
-    private void test_game_win(){
-        int ok = 0;
+    private int test_game_win(){
+        int ok=9999999;
+        System.out.println("myx= "+my_x+"myy= "+my_y);
+        UIManager.put("OptionPane.yesButtonText"   , "Сбежать из подземелья"    );
+        UIManager.put("OptionPane.noButtonText"    , "Остаться из подземелья"   );
         currentallpos = cl.getallpospos();
-        if(currentallpos[0+4*(mynumber-1)]!=my_x && currentallpos[1+4*(mynumber-1)]!=my_y){
+        //if(currentallpos[1+4*(mynumber-1)]!=my_x && currentallpos[0+4*(mynumber-1)]!=my_y){
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==10){
                  ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==10){
                 ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
-                        "Победа?\n Высобрали "+gold+" Монет!",
+                        "Победа?\n Вы собрали "+gold+" Монет!",
                         "Выжил"+enemy,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
+                        JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
-            if(ok == JOptionPane.DEFAULT_OPTION){
-            cl.sendMsg("End_of_the_turn");
+            if(ok == JOptionPane.YES_OPTION){
+            //cl.sendMsg("End_of_the_turn");
             cl.sendMsg("##session##end##");
-            gameover = true;}
-
-        }
+            gameover = true;
+            cl.close();
+            return 1;
+            }
+            else{
+                cl.sendMsg("End_of_the_turn");
+                return 1;
+                //gameover = true;
+            }
+       // }
     }
 }
