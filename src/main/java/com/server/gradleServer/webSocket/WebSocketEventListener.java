@@ -1,5 +1,5 @@
-/*package com.server.gradleServer.webSocket;
-
+package com.server.gradleServer.webSocket;
+/*
 import org.springframework.stereotype.Component;
 import com.server.gradleServer.domain.Message;
 import org.slf4j.Logger;
@@ -36,4 +36,5 @@ public class WebSocketEventListener {
             messagingTemplate.convertAndSend("/app/public", chatMessage);
         }
     }
-}*/
+}
+*/
