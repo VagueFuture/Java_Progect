@@ -19,8 +19,10 @@ public class TheGame extends JFrame {
     private JPanel jpanel_minimap = new JPanel();
     private JLabel room=new JLabel();
     private JLabel card=new JLabel();
+    private JLabel compas = new JLabel();
     private JTextArea HeroView=new JTextArea();
     private JTextArea Herohp=new JTextArea();
+    private JTextArea day=new JTextArea();
     private JTextArea Herogold=new JTextArea();
     private JButton left=new JButton("На Запад");
     private JButton right=new JButton("На Восток");
@@ -62,10 +64,11 @@ public class TheGame extends JFrame {
     private int gold = 0;
     private boolean gameover=false;
     private boolean first=  true;
+    private int day_count = 22;
 
     public TheGame(Integer Hero, Socket fromserver,ClientUI tcl){
         frame  = new JFrame("Game");
-        Dimension size = new Dimension(1200, 700);
+        Dimension size = new Dimension(1300, 800);
         jpanel1.setLayout(new GridBagLayout());
         jpanel_minimap.setLayout(new GridBagLayout());
         GridBagConstraints f = new GridBagConstraints();
@@ -190,8 +193,18 @@ public class TheGame extends JFrame {
         f.gridy=3;
         Herogold.setEditable(false);
         jpanel1.add(Herogold,f);
-///////////////////Hp и Gold///////
 
+        f.gridx=2;
+        f.gridy=2;
+        day.setEditable(false);
+        jpanel1.add(day,f);
+///////////////////Hp и Gold и day///////
+//////////////////compas////////
+        f.gridx = 3;
+        f.gridy = 1;
+        f.gridheight=4;
+        jpanel1.add(compas, f);
+//////////////////compas////////
         try {
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\1.png"));
             //img = img.getScaledInstance(800, 600,  java.awt.Image.SCALE_SMOOTH);
@@ -231,6 +244,11 @@ public class TheGame extends JFrame {
             map[10][10]=8;
             map[0][10]=8;
             map[10][0]=8;
+
+            img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Mini_map\\compas.png"));
+            img = ChangeImage(img,0,150,150,0.5,0.5);
+            icon = new ImageIcon(img);
+            compas.setIcon(icon);
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
@@ -759,6 +777,7 @@ if(first) {
     }
 
     private void newturn(){
+        day_count++;
         find.setEnabled(true);
         up.setEnabled(true);
         down.setEnabled(true);
@@ -1063,7 +1082,7 @@ if(first) {
         if(hero_helf>20){
             hero_helf = 20;
         }
-        if(hero_helf<1){HeroView.setText("Подземелья поглотили вас. Тьма посмертия — всё, что ждёт вас в будущем. Может быть, загробный мир будет более дружелюбным к вам…\nВы собрали "+gold+" Золота\n");
+        if(hero_helf<1 || day_count>24){HeroView.setText("Подземелья поглотили вас. Тьма посмертия — всё, что ждёт вас в будущем. Может быть, загробный мир будет более дружелюбным к вам…\nВы собрали "+gold+" Золота\n");
             cl.sendMsg("End_of_the_turn");
         cl.sendMsg("##session##end##");
             endturn.setText("Конец Игры");
@@ -1073,10 +1092,13 @@ if(first) {
             Color col = new Color(255, 185, 0);
             Herohp.setBackground(col);
             Herogold.setBackground(col);
+            day.setBackground(col);
             Herohp.setFont(new Font("Dialog", Font.PLAIN, 20));
             Herogold.setFont(new Font("Dialog", Font.PLAIN, 20));
+            day.setFont(new Font("Dialog", Font.PLAIN, 20));
             Herohp.setText("ХП " + hero_helf + "");
             Herogold.setText("$" + gold + "");
+            day.setText("День "+day_count+"/24");
         }
     }
 
