@@ -64,7 +64,7 @@ public class TheGame extends JFrame {
     private int gold = 0;
     private boolean gameover=false;
     private boolean first=  true;
-    private int day_count = 22;
+    private int day_count = 24;
 
     public TheGame(Integer Hero, Socket fromserver,ClientUI tcl){
         frame  = new JFrame("Game");
@@ -249,6 +249,7 @@ public class TheGame extends JFrame {
             img = ChangeImage(img,0,150,150,0.5,0.5);
             icon = new ImageIcon(img);
             compas.setIcon(icon);
+            update_hp_gold();
             //jpanel1.add(hero, f);
             cl.getdMsg();//Получаю координаты стартовые
             reader = new FileReader("src\\main\\resources\\Database\\bd.csv");
@@ -750,8 +751,9 @@ if(first) {
                             break;
                         }
                         case 9:{
-                            HeroView.append("Вы нашли на полу мешочек с золотом, похоже, что кто-то обронил в спешке и не заметил.\n ");
-                            gold+=20 + (int) (Math.random() * 100);
+                            int g=20 + (int) (Math.random() * 100);
+                            gold+=g;
+                            HeroView.append("Вы нашли на полу мешочек с золотом, похоже, что кто-то обронил в спешке и не заметил.+\n "+g);
                         }
                         case 10: {
                             break;
@@ -777,7 +779,7 @@ if(first) {
     }
 
     private void newturn(){
-        day_count++;
+        day_count--;
         find.setEnabled(true);
         up.setEnabled(true);
         down.setEnabled(true);
@@ -1082,7 +1084,7 @@ if(first) {
         if(hero_helf>20){
             hero_helf = 20;
         }
-        if(hero_helf<1 || day_count>24){HeroView.setText("Подземелья поглотили вас. Тьма посмертия — всё, что ждёт вас в будущем. Может быть, загробный мир будет более дружелюбным к вам…\nВы собрали "+gold+" Золота\n");
+        if(hero_helf<1 || day_count<=0){HeroView.setText("Подземелья поглотили вас. Тьма посмертия — всё, что ждёт вас в будущем. Может быть, загробный мир будет более дружелюбным к вам…\nВы собрали "+gold+" Золота\n");
             cl.sendMsg("End_of_the_turn");
         cl.sendMsg("##session##end##");
             endturn.setText("Конец Игры");
@@ -1098,7 +1100,7 @@ if(first) {
             day.setFont(new Font("Dialog", Font.PLAIN, 20));
             Herohp.setText("ХП " + hero_helf + "");
             Herogold.setText("$" + gold + "");
-            day.setText("День "+day_count+"/24");
+            day.setText("Осталось часов: "+day_count+" /24");
         }
     }
 
