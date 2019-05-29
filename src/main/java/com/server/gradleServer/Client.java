@@ -9,6 +9,7 @@ public class Client {
         String temp;
         String[] subStr;
         JTextArea info=new JTextArea();
+        info.setLineWrap(false);
         UIManager.put("OptionPane.yesButtonText"   , "Создать сервер"    );
         UIManager.put("OptionPane.noButtonText"    , "Подключиться к серверу"   );
         ok= JOptionPane.showOptionDialog(null,
