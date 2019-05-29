@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Form authorization</title>
+    <link href="style.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+<h1>Form</h1>
+<p>Enter name</p>
+<form action="/chat">
+    <input type="text" name="userName" id="userName"/><br>
+    <input type="button" name="getData" id="getData" value="getData" onclick="getDataFromApi();"/>
+    <input type="submit" name="postData" id="postData" value="postDataEnter" onclick="postDataFromApi();"/>
+</form>
+</body>
+</html>

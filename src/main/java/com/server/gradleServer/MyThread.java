@@ -13,17 +13,24 @@ public class MyThread implements Runnable {
     private Scanner inMessage;
     private String nick;
     private String hero;
+    private int x;
+    private int number;
+    private int y;
+    private int room;
+    private int angle;
+    private boolean turn;
     private boolean ready;
-    private static final String HOST = "25.44.20.209";
+    private static String HOST;
     private static final int PORT = 2620;
     Socket Client = null;
     private static int clients_count = 0;
 
-    public MyThread(Socket socket, ServerSocked server) {
+    public MyThread(Socket socket, ServerSocked server, String[] ip) {
         try {
             clients_count++;
             this.server = server;
             this.Client = socket;
+            HOST= ip[0];//25.44.20.209
             this.outMessage = new PrintWriter(socket.getOutputStream());
             this.inMessage = new Scanner(socket.getInputStream());
         } catch (IOException ex) {
@@ -36,8 +43,8 @@ public class MyThread implements Runnable {
         try {
             while (true) {
                 // сервер отправляет сообщение
-             //   server.sendMessageToAllClients("Новый участник вошёл в чат!");
-                server.sendMessageToAllClients("@" + clients_count);
+                server.sendMessageToAllClients("%" + clients_count);
+                this.number = clients_count;
                 break;
             }
 
@@ -46,12 +53,14 @@ public class MyThread implements Runnable {
                 if (inMessage.hasNext()) {
                     String clientMessage = inMessage.nextLine();
                     // если клиент отправляет данное сообщение, то цикл прерывается и
-                    // клиент выходит из чата
+                    // клиент выходит
                     if (clientMessage.equals("##session##end##")) {
+                        System.out.println("Клиент остановлен!");
                         break;
                     }
-                    // выводим в консоль сообщение (для теста)
                     //Получаем никнейм от клиента
+                    System.out.println("Client message = "+clientMessage);
+
                     if (clientMessage.startsWith("Client_nick")) {
                         clientMessage = clientMessage.substring(12,clientMessage.length());
                         String[] subStr;
@@ -75,9 +84,27 @@ public class MyThread implements Runnable {
                         System.out.println("Ready! = "+this.getready());
                     }
 
-                    System.out.println(clientMessage);
-                    // отправляем данное сообщение всем клиентам
-                    //  server.sendMessageToAllClients(clientMessage);
+                    if (clientMessage.startsWith("Client_posit")) {
+                        clientMessage = clientMessage.substring(12,clientMessage.length());
+                        String[] subStr;
+                        subStr = clientMessage.split("@");
+                        this.x = Integer.valueOf(subStr[0]);
+                        this.y = Integer.valueOf(subStr[1]);
+                        this.room = Integer.valueOf(subStr[2]);
+                        this.angle = Integer.valueOf(subStr[3]);
+                        server.sendAllClientsPosition();
+                        System.out.println("get! x y = "+this.x+" "+this.y);
+                        System.out.println("get! room = "+this.room);
+                        System.out.println("get! angle = "+this.angle);
+                    }
+
+                    if (clientMessage.startsWith("End_of_the_turn")) {
+                        this.turn = true;
+                        server.CheckAllTurn();
+                    }
+
+
+
                 }
                 // останавливаем выполнение потока на 100 мс
                 Thread.sleep(100);
@@ -120,6 +147,39 @@ public class MyThread implements Runnable {
 
     public int getAllClients() {
         return this.clients_count;
+    }
+
+    public int getClientNumber() {
+        return this.number;
+    }
+
+    public void setAmIn(int x,int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getAmInX() {
+        return this.x;
+    }
+
+    public int getAmInY() {
+        return this.y;
+    }
+
+    public boolean getTurn() {
+        return this.turn;
+    }
+
+    public void setgetTurnFalse() {
+        this.turn = false;
+    }
+
+    public int getAmInRoomAngle() {
+        return this.angle;
+    }
+
+    public int getAmInRoom() {
+        return this.room;
     }
 
     public void close() {
