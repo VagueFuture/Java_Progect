@@ -20,13 +20,12 @@ public class GradleServerApplication {
 
 	public static void main(String[] args) {
 		lastId = 0;
-		users.add(new User(String.valueOf(lastId), "admin"));
 		SpringApplication.run(GradleServerApplication.class, args);
 	}
 
 	@RequestMapping(value="/getdata", method = RequestMethod.GET)
 	public ResponseEntity<Object> getData(){
-		return new ResponseEntity<>(lastUser ,HttpStatus.OK);
+		return new ResponseEntity<>(lastUser.getName() ,HttpStatus.OK);
 	}
 	@RequestMapping(value="/postdata", method = RequestMethod.POST)
 	public ResponseEntity<Object> postData(@RequestBody User user){

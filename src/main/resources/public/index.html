@@ -11,16 +11,37 @@
 	<script src="script.js"></script>
 </head>
 <script>
+	var User;
 	$(document).ready(function() {
 		connect();
-		var obj = getDataFromApi();
-		$("#user_name").html(obj);
+		$.ajax({
+			type:"GET",
+			url:"/getdata",
+			success:function (data) {
+				User={
+					name:data
+				};
+				$(".user_name").html(data);
+				console.log("GET id = " + data.id);
+				console.log("GET name = " + data.name);
+			},
+			error:function (jqXHR,textStatus,errorThrown) {
+
+			}
+		});
 	});
+	function getNextUser(name) {
+		$(".user_name_next").html(name);
+	}
+	function getCurrentName() {
+
+		return User.name;
+	}
 </script>
 <body>
 <h1>
 	Chat
-	<span id="user_name" name="user_name"></span>
+	<span class="user_name" name="user_name"></span>
 </h1>
 <div class="chat_window">
 	<div class="top_menu">
@@ -37,7 +58,7 @@
 			<input type="text" id="message_input_value" class="message_input" placeholder="Type your message here..." />
 		</div>
 		<div class="send_message">
-			<div class="icon" onclick="sendMessage()">
+			<div class="icon" onclick="sendMessage(); getNextUser(getCurrentName());">
 				<span style="font-size: 30px">SEND</span>
 			</div>
 		</div>
@@ -45,7 +66,9 @@
 </div>
 <div id="message_template" class="message_template">
 	<li class="message">
-		<div class="avatar"></div>
+		<div class="avatar">
+			<span class="user_name_next"></span>
+		</div>
 		<div class="text_wrapper">
 			<div class="text"></div>
 		</div>

@@ -4,10 +4,7 @@ public class User {
     private String id;
     private  String name;
 
-    public User(String _id, String _name){
-        this.id = _id;
-        this.name = _name;
-    }
+
     public String getId() {
         return id;
     }
