@@ -65,10 +65,11 @@ public class TheGame extends JFrame {
     private boolean gameover=false;
     private boolean first=  true;
     private int day_count = 24;
+    private boolean movement =  true;
 
     public TheGame(Integer Hero, Socket fromserver,ClientUI tcl){
         frame  = new JFrame("Game");
-        Dimension size = new Dimension(1300, 800);
+        Dimension size = new Dimension(1920, 1080);
         jpanel1.setLayout(new GridBagLayout());
         jpanel_minimap.setLayout(new GridBagLayout());
         GridBagConstraints f = new GridBagConstraints();
@@ -115,6 +116,7 @@ public class TheGame extends JFrame {
 
         //f.gridwidth = 2;
         //f.fill = GridBagConstraints.VERTICAL;
+       // f.anchor=GridBagConstraints.BOTH;
         f.gridx=1;
         f.gridy=0;
         f.gridwidth = 3;
@@ -129,7 +131,7 @@ public class TheGame extends JFrame {
                 minimap[i][j] = new JLabel();
                 jpanel_minimap.add(minimap[i][j],ff);
             }
-
+        f.anchor=GridBagConstraints.FIRST_LINE_START;
 //////////////////////////Карточки на карте
 
 
@@ -196,6 +198,8 @@ public class TheGame extends JFrame {
 
         f.gridx=2;
         f.gridy=2;
+        f.gridheight = 4;
+        f.gridwidth = 4;
         day.setEditable(false);
         jpanel1.add(day,f);
 ///////////////////Hp и Gold и day///////
@@ -204,6 +208,8 @@ public class TheGame extends JFrame {
         f.gridy = 1;
         f.gridheight=4;
         jpanel1.add(compas, f);
+        f.gridheight = 1;
+        f.gridwidth = 1;
 //////////////////compas////////
         try {
             img = ImageIO.read(new File("src\\main\\resources\\Drawable\\Rooms\\1.png"));
@@ -331,6 +337,7 @@ public class TheGame extends JFrame {
                   thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                   thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
+                movement = false;
                 System.out.println("key south = "+key);
                 System.out.println("room = "+thisroom);
                 System.out.println("angle south = "+thisangle);
@@ -342,6 +349,7 @@ public class TheGame extends JFrame {
                         test_game_win();
                         paint(0);
                         not_Activ();
+                        movement = true;
                         thisroom = currentallpos[2+4*(mynumber-1)];
                         Card(1);
                     } else {
@@ -359,6 +367,7 @@ public class TheGame extends JFrame {
                 thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                 thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
+                movement = false;
                 System.out.println("key sever = "+key);
                 System.out.println("room = "+thisroom);
                 System.out.println("angle sever = "+thisangle);
@@ -370,6 +379,7 @@ public class TheGame extends JFrame {
                     test_game_win();
                     paint(-180);
                     not_Activ();
+                    movement = true;
                     thisroom = currentallpos[2+4*(mynumber-1)];
                     Card(1);
             }
@@ -386,6 +396,7 @@ public class TheGame extends JFrame {
                 thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                 thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
+                movement = false;
                 System.out.println("key west = "+key);
                 System.out.println("room = "+thisroom);
                 System.out.println("angle west = "+thisangle);
@@ -397,6 +408,7 @@ public class TheGame extends JFrame {
                     test_game_win();
                     paint(-90);
                     not_Activ();
+                    movement = true;
                     thisroom = currentallpos[2+4*(mynumber-1)];
                     Card(1);
                 }
@@ -413,6 +425,7 @@ public class TheGame extends JFrame {
                 thisangle =angles[currentallpos[0+4*(mynumber-1)]][currentallpos[1+4*(mynumber-1)]];
                 thisroom = currentallpos[2+4*(mynumber-1)];
                 int key = test_room(thisangle);
+                movement = false;
                 System.out.println("key east = "+key);
                 System.out.println("room = "+thisroom);
                 System.out.println("angle east = "+thisangle);
@@ -424,6 +437,7 @@ public class TheGame extends JFrame {
                             test_game_win();
                             paint(90);
                             not_Activ();
+                            movement = true;
                             thisroom = currentallpos[2+4*(mynumber-1)];
                             Card(1);
                         }
@@ -575,11 +589,11 @@ if(first) {
             else{}
 
         }
-        if(thisroom == 5){
+        if(thisroom == 5 && movement){
             gold = gold+5;
         }
-        if(thisroom == 12){
-            gold = gold+100;
+        if(thisroom == 12 && movement){
+            gold = gold+500;
         }
         if(thisroom == 10){
             dmg =skillchec(1);
