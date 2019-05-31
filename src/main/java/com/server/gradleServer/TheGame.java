@@ -1138,21 +1138,21 @@ if(first) {
                 ok =JOptionPane.showConfirmDialog(
                         this,
                         "Победа?\n Вы собрали "+gold+" Монет!",
-                        "Выжил"+enemy,
+                        "Выжил",
                         JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==10 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
                         "Победа?\n Вы собрали "+gold+" Монет!",
-                        "Выжил"+enemy,
+                        "Выжил",
                         JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(currentallpos[0+4*(mynumber-1)]==0 && currentallpos[1+4*(mynumber-1)]==0){
                 ok =JOptionPane.showConfirmDialog(
                         this,
                         "Победа?\n Вы собрали "+gold+" Монет!",
-                        "Выжил"+enemy,
+                        "Выжил",
                         JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,hero.getIcon());
             }
             if(ok == JOptionPane.YES_OPTION){
