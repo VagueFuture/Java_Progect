@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <title>Form authorization</title>
     <link href="style.css" rel="stylesheet">
-    <script src="js/jquery.js"></script>
-    <script src="script.js"></script>
+    <script src="webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="webjars/stomp-websocket/stomp.min.js"></script>
 </head>
 <body>
 <h1>Form</h1>
 <p>Enter name</p>
-<form action="/chat">
-    <input type="text" name="userName" id="userName"/><br>
+<form action="/chat" id="Users">
+    <input type="text" name="userName" id="userName" autocomplete="off"/><br>
     <input type="button" name="getData" id="getData" value="getData" onclick="getDataFromApi();"/>
-    <input type="submit" name="postData" id="postData" value="postDataEnter" onclick="postDataFromApi();"/>
+    <input type="submit" name="postData" id="postData" value="postDataEnter1"/>
 </form>
+<script src="js/jquery.js"></script>
+<script>
+    var users = document.querySelector('#Users');
+    users.addEventListener('submit', connect, true);
+</script>
 </body>
 </html>

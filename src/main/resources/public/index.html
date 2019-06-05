@@ -1,78 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Chat</title>
-	<link href="webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="style.css" rel="stylesheet">
-	<script src="js/jquery.js"></script>
-	<script src="webjars/sockjs-client/sockjs.min.js"></script>
-	<script src="webjars/stomp-websocket/stomp.min.js"></script>
-	<script src="script.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<title>Spring Boot WebSocket Chat Application | CalliCoder</title>
+	<link rel="stylesheet" href="/style.css" />
 </head>
-<script>
-	var User;
-	$(document).ready(function() {
-		connect();
-		$.ajax({
-			type:"GET",
-			url:"/getdata",
-			success:function (data) {
-				User={
-					name:data
-				};
-				$(".user_name").html(data);
-				console.log("GET id = " + data.id);
-				console.log("GET name = " + data.name);
-			},
-			error:function (jqXHR,textStatus,errorThrown) {
-
-			}
-		});
-	});
-	function getNextUser(name) {
-		$(".user_name_next").html(name);
-	}
-	function getCurrentName() {
-
-		return User.name;
-	}
-</script>
 <body>
-<h1>
-	Chat
-	<span class="user_name" name="user_name"></span>
-</h1>
-<div class="chat_window">
-	<div class="top_menu">
-		<div class="buttons">
-			<div class="button close" onclick="disconnect()"></div>
-			<div class="button minimize"></div>
-			<div class="button maximize"></div>
-		</div>
-		<div class="title">Chat</div>
-	</div>
-	<ul class="messages"></ul>
-	<div class="bottom_wrapper clearfix">
-		<div class="message_input_wrapper">
-			<input type="text" id="message_input_value" class="message_input" placeholder="Type your message here..." />
-		</div>
-		<div class="send_message">
-			<div class="icon" onclick="sendMessage(); getNextUser(getCurrentName());">
-				<span style="font-size: 30px">SEND</span>
+<noscript>
+	<h2>Sorry! Your browser doesn't support Javascript</h2>
+</noscript>
+
+<div id="username-page">
+	<div class="username-page-container">
+		<h1 class="title">Type your username</h1>
+		<form id="usernameForm" name="usernameForm">
+			<div class="form-group">
+				<input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control" />
 			</div>
-		</div>
+			<div class="form-group">
+				<button type="submit" class="accent username-submit">Start Chatting</button>
+			</div>
+		</form>
 	</div>
 </div>
-<div id="message_template" class="message_template">
-	<li class="message">
-		<div class="avatar">
-			<span class="user_name_next"></span>
+
+<div id="chat-page" class="hidden">
+	<div class="chat-container">
+		<div class="chat-header">
+			<h2>Spring WebSocket Chat Demo</h2>
 		</div>
-		<div class="text_wrapper">
-			<div class="text"></div>
+		<div class="connecting">
+			Connecting...
 		</div>
-	</li>
+		<ul id="messageArea">
+
+		</ul>
+		<form id="messageForm" name="messageForm" nameForm="messageForm">
+			<div class="form-group">
+				<div class="input-group clearfix">
+					<input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
+					<button type="submit" class="primary">Send</button>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>
+
+<!--script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script-->
+<script src="webjars/sockjs-client/sockjs.min.js"></script>
+<script src="webjars/stomp-websocket/stomp.min.js"></script>
+<script src="/script.js"></script>
 </body>
 </html>
